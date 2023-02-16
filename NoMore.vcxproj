@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DecorGameObject.cpp" />
+    <ClCompile Include="GameHandler.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="LivingGameObject.cpp" />
     <ClCompile Include="NoMore.cpp" />
@@ -135,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DecorGameObject.h" />
+    <ClInclude Include="GameHandler.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="LivingGameObject.h" />
     <ClInclude Include="PlayerObject.h" />

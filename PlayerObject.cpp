@@ -21,6 +21,7 @@ GameObject::Matrix PlayerObject::getMatrix() {
 	}
 	else if (currentAction == STAING_SECOND) {
 		return {
+			{ ' ', ' ', ' ', ' ' },
 			{ ' ', '#', '#', ' ' },
 			{ ' ', '#', '#', ' ' },
 			{ '#', '#', '#', '#' },
@@ -28,7 +29,6 @@ GameObject::Matrix PlayerObject::getMatrix() {
 			{ '#', '#', '#', '#' },
 			{ '#', '#', '#', '#' },
 			{ ' ', '#', '#', ' ' },
-			{ ' ', ' ', '#', '#' },
 			{ ' ', ' ', '#', '#' },
 			{ ' ', '#', '#', ' ' },
 		};
