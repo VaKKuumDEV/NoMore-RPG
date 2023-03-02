@@ -7,7 +7,7 @@ class DecorGameObject : public GameObject
 private:
 	bool isThick;
 public:
-	DecorGameObject(int x, int y, bool isThick);
+	DecorGameObject(int x, int y, int borderX, int borderY, bool isThick);
 	bool isCollisingWith(GameObject& obj);
 	bool isThickingObject() { return isThick; }
 };

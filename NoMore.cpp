@@ -15,9 +15,12 @@ using namespace std;
 const int TPS = 20;
 pair<int, int> sizes;
 GameHandler* handler = NULL;
+GameHandler::PRESSED_KEYS pressed = GameHandler::PRESSED_KEYS::NONE;
 
 void gameHandlerLoop();
 pair<int, int> getConsoleSize();
+bool IsPress(char symbol);
+void keyControl();
 
 int main()
 {
@@ -41,8 +44,10 @@ int main()
 
 void gameHandlerLoop() {
     while (handler->getStatus() == GameHandler::PLAYING) {
+        keyControl();
+
         sizes = getConsoleSize();
-        handler->process(sizes.first, sizes.second);
+        handler->process(sizes.first, sizes.second, pressed);
 
         chrono::milliseconds timespan((int)(1000 / TPS));
         this_thread::sleep_for(timespan);
@@ -56,4 +61,17 @@ pair<int, int> getConsoleSize() {
     columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
     rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
     return pair<int, int>(columns, rows);
+}
+
+bool IsPress(char symbol)
+{
+    return (GetKeyState(symbol) & 0x8000);
+}
+
+void keyControl() {
+    if (IsPress('w') || IsPress('W')) pressed = GameHandler::PRESSED_KEYS::UP;
+    else if (IsPress('s') || IsPress('S')) pressed = GameHandler::PRESSED_KEYS::DOWN;
+    else if (IsPress('a') || IsPress('A')) pressed = GameHandler::PRESSED_KEYS::LEFT;
+    else if (IsPress('d') || IsPress('D')) pressed = GameHandler::PRESSED_KEYS::RIGHT;
+    else pressed = GameHandler::PRESSED_KEYS::NONE;
 }

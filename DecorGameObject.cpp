@@ -1,6 +1,6 @@
 #include "DecorGameObject.h"
 
-DecorGameObject::DecorGameObject(int x, int y, bool isThick): GameObject(x, y) {
+DecorGameObject::DecorGameObject(int x, int y, int borderX, int borderY, bool isThick): GameObject(x, y, borderX, borderY) {
 	this->isThick = isThick;
 }
 

@@ -1,8 +1,10 @@
 #include "GameObject.h"
 
-GameObject::GameObject(int x, int y) {
+GameObject::GameObject(int x, int y, int borderX, int borderY) {
 	this->x = x;
 	this->y = y;
+	this->borderX = borderX;
+	this->borderY = borderY;
 }
 
 int GameObject::getWidth() {

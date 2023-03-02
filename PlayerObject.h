@@ -12,12 +12,19 @@ private:
 		WALKING_SECOND,
 		DAMAGING,
 	};
+	enum PlayerOrientation {
+		LEFT,
+		RIGHT,
+	};
+
 	float damageRadius = 1.5;
 	int skippingTicks = ACTION_SKIP;
 	PlayerActions currentAction = STAING_FIRST;
+	PlayerOrientation currentOrientation = RIGHT;
 public:
-	PlayerObject(int x, int y);
+	PlayerObject(int x, int y, int borderX, int borderY);
 	GameObject::Matrix getMatrix() override;
 	void process() override;
+	void setWalkingAnimation();
 };
 

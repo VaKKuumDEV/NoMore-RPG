@@ -1,12 +1,14 @@
 #include "PlayerObject.h"
 
-PlayerObject::PlayerObject(int x, int y) : LivingGameObject(x, y, 10, 10) {
+PlayerObject::PlayerObject(int x, int y, int borderX, int borderY) : LivingGameObject(x, y, borderX, borderY, 10, 10) {
 
 }
 
 GameObject::Matrix PlayerObject::getMatrix() {
+	GameObject::Matrix matr = std::vector<std::vector<char>>(2, std::vector<char>(2, '#'));
+
 	if (currentAction == STAING_FIRST) {
-		return {
+		matr = {
 			{ ' ', '#', '#', ' ' },
 			{ ' ', '#', '#', ' ' },
 			{ '#', '#', '#', '#' },
@@ -20,7 +22,7 @@ GameObject::Matrix PlayerObject::getMatrix() {
 		};
 	}
 	else if (currentAction == STAING_SECOND) {
-		return {
+		matr = {
 			{ ' ', ' ', ' ', ' ' },
 			{ ' ', '#', '#', ' ' },
 			{ ' ', '#', '#', ' ' },
@@ -33,8 +35,40 @@ GameObject::Matrix PlayerObject::getMatrix() {
 			{ ' ', '#', '#', ' ' },
 		};
 	}
+	else if (currentAction == WALKING_FIRST) {
+		matr = {
+			{ ' ', '#', '#', ' ', ' '},
+			{ ' ', '#', '#', ' ', ' '},
+			{ '#', '#', '#', '#', ' '},
+			{ '#', '#', '#', '#', ' '},
+			{ '#', '#', '#', '#', '#'},
+			{ '#', '#', '#', ' ', ' '},
+			{ ' ', '#', '#', ' ', ' '},
+			{ '#', ' ', '#', ' ', ' '},
+			{ '#', ' ', '#', ' ', ' '},
+			{ '#', ' ', ' ', '#', ' '},
+		};
+	}
+	else if (currentAction == WALKING_SECOND) {
+		matr = {
+			{ ' ', '#', '#', ' ' },
+			{ ' ', '#', '#', ' ' },
+			{ '#', '#', '#', '#' },
+			{ '#', '#', '#', '#' },
+			{ '#', '#', '#', '#' },
+			{ '#', '#', '#', '#' },
+			{ ' ', '#', '#', ' ' },
+			{ ' ', '#', ' ', '#' },
+			{ ' ', '#', ' ', '#' },
+			{ '#', ' ', ' ', '#' },
+		};
+	}
 
-	return std::vector<std::vector<char>>(2, std::vector<char>(2, '#'));
+	if (currentOrientation == LEFT) {
+		//сделать разворот
+	}
+
+	return matr;
 }
 
 void PlayerObject::process() {
@@ -48,5 +82,28 @@ void PlayerObject::process() {
 			currentAction = STAING_FIRST;
 			skippingTicks = ACTION_SKIP;
 		}
+		else if (currentAction == WALKING_FIRST) {
+			currentAction = STAING_FIRST;
+			skippingTicks = ACTION_SKIP;
+		}
+		else if (currentAction == WALKING_SECOND) {
+			currentAction = STAING_FIRST;
+			skippingTicks = ACTION_SKIP;
+		}
+	}
+}
+
+void PlayerObject::setWalkingAnimation() {
+	if (currentAction == WALKING_FIRST && skippingTicks <= 0) {
+		currentAction = WALKING_SECOND;
+		skippingTicks = ACTION_SKIP;
+	}
+	else if (currentAction == WALKING_SECOND && skippingTicks <= 0) {
+		currentAction = WALKING_FIRST;
+		skippingTicks = ACTION_SKIP;
+	}
+	else if (currentAction == STAING_FIRST || currentAction == STAING_SECOND) {
+		currentAction = WALKING_FIRST;
+		skippingTicks = ACTION_SKIP;
 	}
 }

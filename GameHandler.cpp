@@ -6,7 +6,7 @@ GameHandler::GameHandler(int borderTop, int borderRight) {
 }
 
 void GameHandler::start() {
-	player = new PlayerObject(3, 4);
+	player = new PlayerObject(3, 4, gameBorderRight, gameBorderTop);
 
 	status = PLAYING;
 }
@@ -143,8 +143,14 @@ void GameHandler::printMatrix(int screenWidth, int screenHeight) {
 	}
 }
 
-void GameHandler::process(int screenWidth, int screenHeight) {
+void GameHandler::process(int screenWidth, int screenHeight, PRESSED_KEYS key) {
 	if (status == PLAYING) {
+		if (key == UP) player->addY(1);
+		else if (key == DOWN) player->addY(-1);
+		else if (key == LEFT) player->addX(-1);
+		else if (key == RIGHT) player->addX(1);
+
+		if (key != NONE) player->setWalkingAnimation();
 		player->process();
 	}
 

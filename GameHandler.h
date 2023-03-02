@@ -9,6 +9,13 @@
 #pragma once
 class GameHandler {
 public:
+	enum PRESSED_KEYS {
+		NONE,
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT,
+	};
 	enum GameStatuses {
 		NOT_INITED,
 		PLAYING,
@@ -34,5 +41,7 @@ public:
 	void start();
 	void stop();
 	GameStatuses getStatus() { return status; }
-	void process(int screenWidth, int screenHeight);
+	int getTopBorder() { return gameBorderTop; }
+	int getRightBorder() { return gameBorderRight; }
+	void process(int screenWidth, int screenHeight, PRESSED_KEYS key);
 };
