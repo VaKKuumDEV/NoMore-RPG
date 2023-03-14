@@ -6,7 +6,7 @@ GameHandler::GameHandler(int borderTop, int borderRight) {
 }
 
 void GameHandler::start() {
-	player = new PlayerObject(3, 4, gameBorderRight, gameBorderTop);
+	player = new PlayerObject(3, 2, gameBorderRight, gameBorderTop);
 
 	status = PLAYING;
 }
@@ -19,22 +19,25 @@ void GameHandler::stop() {
 
 GameObject::Matrix GameHandler::getGameMatrix(int screenWidth, int screenHeight) {
 	GameObject::Matrix gameMatrix = std::vector<std::vector<char>>(screenHeight, std::vector<char>(screenWidth, ' '));
-
-	int localScreenMaxX = screenPlayerOffsetX + screenWidth;
-	int localScreenMaxY = screenPlayerOffsetY + screenHeight;
-
+	
 	if (status == PLAYING) {
+		int otnY = player->getY() - screenPlayerOffsetY;
+		int otnX = player->getX() - screenPlayerOffsetX;
+
 		if (player->getX() >= screenPlayerOffsetX && player->getY() >= screenPlayerOffsetY) {
 			GameObject::Matrix playerMatrix = player->getMatrix();
-			for (int i = playerMatrix.size() - 1; i >= 0; i--) {
+			for (int i = 0; i < playerMatrix.size(); i++) {
+				int locY = otnY + i;
+				std::vector<char> lineChars = gameMatrix[locY];
 				for (int j = 0; j < playerMatrix[i].size(); j++) {
-					int otnX = player->getX() - screenPlayerOffsetX + j;
-					int otnY = screenHeight - playerMatrix.size() + i - player->getY() - screenPlayerOffsetY;
+					int locX = otnX + j;
 
-					if (otnX >= screenWidth) continue;
-					if (otnY >= screenHeight) continue;
-					gameMatrix[otnY][otnX] = playerMatrix[i][j];
+					if (locX >= screenWidth || locX < 0) continue;
+					if (locY >= screenHeight || locY < 0) continue;
+					lineChars[locX] = playerMatrix[i][j];
 				}
+
+				gameMatrix[locY] = lineChars;
 			}
 		}
 	}
@@ -145,13 +148,21 @@ void GameHandler::printMatrix(int screenWidth, int screenHeight) {
 
 void GameHandler::process(int screenWidth, int screenHeight, PRESSED_KEYS key) {
 	if (status == PLAYING) {
-		if (key == UP) player->addY(1);
-		else if (key == DOWN) player->addY(-1);
+		if (key == UP) player->addY(-1);
+		else if (key == DOWN) player->addY(1);
 		else if (key == LEFT) player->addX(-1);
 		else if (key == RIGHT) player->addX(1);
 
 		if (key != NONE) player->setWalkingAnimation();
+
+		if (key == LEFT) player->setOrientation(true);
+		else if (key == RIGHT) player->setOrientation(false);
+
 		player->process();
+
+		/*int otnY = player->getY() + player->getHeight() - screenPlayerOffsetY;
+		if (otnY > screenHeight) screenPlayerOffsetY++;
+		else if (otnY < 0) screenPlayerOffsetY--;*/
 	}
 
 	printMatrix(screenWidth, screenHeight);

@@ -26,5 +26,6 @@ public:
 	GameObject::Matrix getMatrix() override;
 	void process() override;
 	void setWalkingAnimation();
+	void setOrientation(bool isLeft);
 };
 

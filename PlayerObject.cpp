@@ -65,7 +65,11 @@ GameObject::Matrix PlayerObject::getMatrix() {
 	}
 
 	if (currentOrientation == LEFT) {
-		//сделать разворот
+		for (int i = 0; i < matr.size(); i++) {
+			std::vector<char> newMatrLine = std::vector<char>(matr[i].size());
+			for (int j = 0; j < newMatrLine.size(); j++) newMatrLine[j] = matr[i][matr[i].size() - j - 1];
+			matr[i] = newMatrLine;
+		}
 	}
 
 	return matr;
@@ -106,4 +110,8 @@ void PlayerObject::setWalkingAnimation() {
 		currentAction = WALKING_FIRST;
 		skippingTicks = ACTION_SKIP;
 	}
+}
+
+void PlayerObject::setOrientation(bool isLeft) {
+	currentOrientation = isLeft ? LEFT : RIGHT;
 }
