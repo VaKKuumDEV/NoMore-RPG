@@ -8,6 +8,8 @@ GameHandler::GameHandler(int borderTop, int borderRight) {
 void GameHandler::start() {
 	player = new PlayerObject(3, 2, gameBorderRight, gameBorderTop);
 
+	enemies.push_back(RabbitEnemy(12, 3, gameBorderRight, gameBorderTop));
+
 	status = PLAYING;
 }
 
@@ -38,6 +40,27 @@ GameObject::Matrix GameHandler::getGameMatrix(int screenWidth, int screenHeight)
 				}
 
 				gameMatrix[locY] = lineChars;
+			}
+		}
+
+		for (auto& enemy : enemies) {
+			int enemyOtnX = enemy.getX() - screenPlayerOffsetX;
+			int enemyOtnY = enemy.getY() - screenPlayerOffsetY;
+			if (enemy.getX() >= screenPlayerOffsetX && enemy.getY() >= screenPlayerOffsetY) {
+				GameObject::Matrix enemyMatrix = enemy.getMatrix();
+				for (int i = 0; i < enemyMatrix.size(); i++) {
+					int locY = enemyOtnY + i;
+					std::vector<char> lineChars = gameMatrix[locY];
+					for (int j = 0; j < enemyMatrix[i].size(); j++) {
+						int locX = enemyOtnX + j;
+
+						if (locX >= screenWidth || locX < 0) continue;
+						if (locY >= screenHeight || locY < 0) continue;
+						lineChars[locX] = enemyMatrix[i][j];
+					}
+
+					gameMatrix[locY] = lineChars;
+				}
 			}
 		}
 	}
@@ -159,6 +182,9 @@ void GameHandler::process(int screenWidth, int screenHeight, PRESSED_KEYS key) {
 		else if (key == RIGHT) player->setOrientation(false);
 
 		player->process();
+		for (auto& enemy : enemies) {
+			enemy.process();
+		}
 
 		/*int otnY = player->getY() + player->getHeight() - screenPlayerOffsetY;
 		if (otnY > screenHeight) screenPlayerOffsetY++;

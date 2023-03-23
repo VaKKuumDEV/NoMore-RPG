@@ -39,3 +39,7 @@ void LivingGameObject::addY(int diffY) {
 
 	setY(calculatedY);
 }
+
+void LivingGameObject::setOrientation(bool isLeft) {
+	currentOrientation = isLeft ? LEFT : RIGHT;
+}
