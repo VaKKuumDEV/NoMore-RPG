@@ -1,6 +1,6 @@
 #include "RabbitEnemy.h"
 
-RabbitEnemy::RabbitEnemy(int x, int y, int borderX, int borderY) : EnemyObject(x, y, borderX, borderY, 10, 10, 3, FRIENDLY)
+RabbitEnemy::RabbitEnemy(int x, int y, int borderX, int borderY) : LivingGameObject(x, y, borderX, borderY, 10, 10, 3, FRIENDLY)
 {
 
 }
@@ -67,5 +67,5 @@ GameObject::Matrix RabbitEnemy::getMatrix()
 
 void RabbitEnemy::process()
 {
-	EnemyObject::process();
+	LivingGameObject::process();
 }

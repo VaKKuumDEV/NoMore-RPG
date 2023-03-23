@@ -1,8 +1,14 @@
 #include "LivingGameObject.h"
 
-LivingGameObject::LivingGameObject(int x, int y, int borderX, int borderY, int health, int maxHealth) : GameObject(x, y, borderX, borderY) {
+LivingGameObject::LivingGameObject(int x, int y, int borderX, int borderY, int health, int maxHealth, double radius, EnemyTypes type) : GameObject(x, y, borderX, borderY) {
 	this->health = health;
 	this->maxHealth = maxHealth;
+	this->type = type;
+	this->visionRadius = radius;
+}
+
+bool LivingGameObject::isInVisionPole(int x, int y) {
+	return pow((double)x - getX(), 2) + pow((double)y - getY(), 2) <= visionRadius;
 }
 
 void LivingGameObject::applyDamage(int damagePoints) {
@@ -42,4 +48,43 @@ void LivingGameObject::addY(int diffY) {
 
 void LivingGameObject::setOrientation(bool isLeft) {
 	currentOrientation = isLeft ? LEFT : RIGHT;
+}
+
+void LivingGameObject::setWalkingAnimation()
+{
+	if (action == WALKING_FIRST && skippingTicks <= 0) {
+		action = WALKING_SECOND;
+		skippingTicks = ACTION_SKIP;
+	}
+	else if (action == WALKING_SECOND && skippingTicks <= 0) {
+		action = WALKING_FIRST;
+		skippingTicks = ACTION_SKIP;
+	}
+	else if (action == STAING_FIRST || action == STAING_SECOND) {
+		action = WALKING_FIRST;
+		skippingTicks = ACTION_SKIP;
+	}
+}
+
+void LivingGameObject::process()
+{
+	if (skippingTicks > 0) skippingTicks--;
+	else {
+		if (action == STAING_FIRST) {
+			action = STAING_SECOND;
+			skippingTicks = ACTION_SKIP;
+		}
+		else if (action == STAING_SECOND) {
+			action = STAING_FIRST;
+			skippingTicks = ACTION_SKIP;
+		}
+		else if (action == WALKING_FIRST) {
+			action = STAING_FIRST;
+			skippingTicks = ACTION_SKIP;
+		}
+		else if (action == WALKING_SECOND) {
+			action = STAING_FIRST;
+			skippingTicks = ACTION_SKIP;
+		}
+	}
 }

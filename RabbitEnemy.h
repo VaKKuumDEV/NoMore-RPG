@@ -1,7 +1,7 @@
-#include "EnemyObject.h"
+#include "LivingGameObject.h"
 
 #pragma once
-class RabbitEnemy : public EnemyObject
+class RabbitEnemy : public LivingGameObject
 {
 public:
 	RabbitEnemy(int x, int y, int borderX, int borderY);

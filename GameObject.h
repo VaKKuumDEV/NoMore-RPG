@@ -7,6 +7,7 @@ public:
 	struct Point {
 		int x, y;
 	};
+	const char T = '@';
 private:
 	int x, y;
 	int borderX, borderY;

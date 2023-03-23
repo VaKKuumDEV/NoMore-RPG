@@ -1,13 +1,13 @@
 #include "PlayerObject.h"
 
-PlayerObject::PlayerObject(int x, int y, int borderX, int borderY) : LivingGameObject(x, y, borderX, borderY, 10, 10) {
+PlayerObject::PlayerObject(int x, int y, int borderX, int borderY) : LivingGameObject(x, y, borderX, borderY, 10, 10, 2, PLAYER) {
 
 }
 
 GameObject::Matrix PlayerObject::getMatrix() {
 	GameObject::Matrix matr = std::vector<std::vector<char>>(2, std::vector<char>(2, '#'));
 
-	if (currentAction == STAING_FIRST) {
+	if (getAction() == STAING_FIRST) {
 		matr = {
 			{ ' ', '#', '#', ' ' },
 			{ ' ', '#', '#', ' ' },
@@ -21,7 +21,7 @@ GameObject::Matrix PlayerObject::getMatrix() {
 			{ ' ', '#', '#', ' ' },
 		};
 	}
-	else if (currentAction == STAING_SECOND) {
+	else if (getAction() == STAING_SECOND) {
 		matr = {
 			{ ' ', ' ', ' ', ' ' },
 			{ ' ', '#', '#', ' ' },
@@ -35,7 +35,7 @@ GameObject::Matrix PlayerObject::getMatrix() {
 			{ ' ', '#', '#', ' ' },
 		};
 	}
-	else if (currentAction == WALKING_FIRST) {
+	else if (getAction() == WALKING_FIRST) {
 		matr = {
 			{ ' ', '#', '#', ' ', ' '},
 			{ ' ', '#', '#', ' ', ' '},
@@ -49,7 +49,7 @@ GameObject::Matrix PlayerObject::getMatrix() {
 			{ '#', ' ', ' ', '#', ' '},
 		};
 	}
-	else if (currentAction == WALKING_SECOND) {
+	else if (getAction() == WALKING_SECOND) {
 		matr = {
 			{ ' ', '#', '#', ' ' },
 			{ ' ', '#', '#', ' ' },
@@ -76,38 +76,5 @@ GameObject::Matrix PlayerObject::getMatrix() {
 }
 
 void PlayerObject::process() {
-	if (skippingTicks > 0) skippingTicks--;
-	else {
-		if (currentAction == STAING_FIRST) {
-			currentAction = STAING_SECOND;
-			skippingTicks = ACTION_SKIP;
-		}
-		else if (currentAction == STAING_SECOND) {
-			currentAction = STAING_FIRST;
-			skippingTicks = ACTION_SKIP;
-		}
-		else if (currentAction == WALKING_FIRST) {
-			currentAction = STAING_FIRST;
-			skippingTicks = ACTION_SKIP;
-		}
-		else if (currentAction == WALKING_SECOND) {
-			currentAction = STAING_FIRST;
-			skippingTicks = ACTION_SKIP;
-		}
-	}
-}
-
-void PlayerObject::setWalkingAnimation() {
-	if (currentAction == WALKING_FIRST && skippingTicks <= 0) {
-		currentAction = WALKING_SECOND;
-		skippingTicks = ACTION_SKIP;
-	}
-	else if (currentAction == WALKING_SECOND && skippingTicks <= 0) {
-		currentAction = WALKING_FIRST;
-		skippingTicks = ACTION_SKIP;
-	}
-	else if (currentAction == STAING_FIRST || currentAction == STAING_SECOND) {
-		currentAction = WALKING_FIRST;
-		skippingTicks = ACTION_SKIP;
-	}
+	LivingGameObject::process();
 }

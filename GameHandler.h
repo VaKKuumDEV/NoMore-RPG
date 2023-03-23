@@ -1,6 +1,6 @@
 #include "GameObject.h"
 #include "PlayerObject.h"
-#include "EnemyObject.h"
+#include "LivingGameObject.h"
 #include "RabbitEnemy.h"
 #include <tuple>
 #include <iostream>
@@ -34,7 +34,7 @@ private:
 	PlayerObject* player = NULL;
 	int screenPlayerOffsetX = 0, screenPlayerOffsetY = 0;
 	int gameBorderTop, gameBorderRight;
-	std::vector<EnemyObject> enemies;
+	std::vector<LivingGameObject*> enemies;
 	GameObject::Matrix getGameMatrix(int screenWidth, int screenHeight);
 	std::list<GameHandler::MatrixDiff> getMatrixesDiff(GameObject::Matrix lastMatrix, GameObject::Matrix nextMatrix);
 	void ClearScreen();
