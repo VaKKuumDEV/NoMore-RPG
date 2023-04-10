@@ -69,3 +69,7 @@ void RabbitEnemy::process()
 {
 	LivingGameObject::process();
 }
+
+void RabbitEnemy::preprocess() {
+
+}

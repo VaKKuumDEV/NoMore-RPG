@@ -19,18 +19,17 @@ int GameObject::getHeight() {
 	return maxHeight;
 }
 
-bool GameObject::isCollisingWith(GameObject& obj) {
-	int minX = std::min(getX(), obj.getX());
-	int maxX = std::max(getX() + getWidth(), obj.getX() + obj.getWidth());
-	int minY = std::min(getY(), obj.getY());
-	int maxY = std::max(getY() + getHeight(), obj.getY() + obj.getHeight());
+bool GameObject::isCollisingWith(Matrix matr, int x, int y, int width, int height) {
+	int minX = std::min(getX(), x);
+	int maxX = std::max(getX() + getWidth(), x + width);
+	int minY = std::min(getY(), y);
+	int maxY = std::max(getY() + getHeight(), y + height);
 
-	int diffX = minX - maxX;
-	int diffY = minY - maxY;
+	int diffX = maxX - minX;
+	int diffY = maxY - minY;
 
 	Matrix collisedMatrix = std::vector<std::vector<char>>(diffY, std::vector<char>(diffX, ' '));
 	Matrix thisMatrix = getMatrix();
-	Matrix objMatrix = obj.getMatrix();
 
 	for (int i = thisMatrix.size() - 1; i >= 0; i--) {
 		for (int j = 0; j < thisMatrix[i].size(); j++) {
@@ -42,15 +41,28 @@ bool GameObject::isCollisingWith(GameObject& obj) {
 		}
 	}
 
-	for (int i = objMatrix.size() - 1; i >= 0; i--) {
-		for (int j = 0; j < objMatrix[i].size(); j++) {
-			if (objMatrix[i][j] == ' ') continue;
+	for (int i = matr.size() - 1; i >= 0; i--) {
+		int otnY = y - minY + i;
+		for (int j = 0; j < matr[i].size(); j++) {
+			if (matr[i][j] == ' ') continue;
 
-			int otnX = obj.getX() - minX + j;
-			int otnY = obj.getY() - minY + i;
+			int otnX = x - minX + j;
 			if (collisedMatrix[otnY][otnX] != ' ') return true;
 		}
 	}
 
 	return false;
+}
+
+bool GameObject::isCollisingWith(GameObject& obj) {
+	return isCollisingWith(obj.getMatrix(), obj.getX(), obj.getY(), obj.getWidth(), obj.getHeight());
+}
+
+void GameObject::executeCollision(GameObject* obj) {
+
+}
+
+void GameObject::cancelMoving() {
+	x -= diffX;
+	y -= diffY;
 }

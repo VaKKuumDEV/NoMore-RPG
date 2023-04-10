@@ -7,5 +7,6 @@ public:
 	RabbitEnemy(int x, int y, int borderX, int borderY);
 	GameObject::Matrix getMatrix() override;
 	void process() override;
+	void preprocess() override;
 };
 

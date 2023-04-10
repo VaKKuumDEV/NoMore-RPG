@@ -8,6 +8,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <typeinfo>
 
 #pragma once
 class GameHandler {
@@ -31,7 +32,7 @@ public:
 private:
 	GameStatuses status = NOT_INITED;
 	GameObject::Matrix lastGameMatrix;
-	PlayerObject* player = NULL;
+	//PlayerObject* player = NULL;
 	int screenPlayerOffsetX = 0, screenPlayerOffsetY = 0;
 	int gameBorderTop, gameBorderRight;
 	std::vector<LivingGameObject*> enemies;
@@ -45,6 +46,7 @@ public:
 	void start();
 	void stop();
 	GameStatuses getStatus() { return status; }
+	PlayerObject* getPlayer();
 	int getTopBorder() { return gameBorderTop; }
 	int getRightBorder() { return gameBorderRight; }
 	void process(int screenWidth, int screenHeight, PRESSED_KEYS key);

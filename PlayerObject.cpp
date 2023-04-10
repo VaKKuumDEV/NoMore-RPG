@@ -75,6 +75,21 @@ GameObject::Matrix PlayerObject::getMatrix() {
 	return matr;
 }
 
+void PlayerObject::executeCollision(GameObject* obj) {
+	auto castedToLivingObject = dynamic_cast<LivingGameObject*>(obj);
+	if (castedToLivingObject != NULL) cancelMoving();
+}
+
 void PlayerObject::process() {
+	if (getDiffX() != 0 || getDiffY() != 0) setWalkingAnimation();
+
+	if (getDiffX() < 0) setOrientation(true);
+	else if (getDiffX() > 0) setOrientation(false);
+
 	LivingGameObject::process();
+}
+
+void PlayerObject::preprocess() {
+	addX(getDiffX());
+	addY(getDiffY());
 }
