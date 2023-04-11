@@ -29,9 +29,14 @@ int main()
 
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_FONT_INFOEX fontInfo;
-    GetCurrentConsoleFontEx(hConsole, TRUE, &fontInfo);
-    fontInfo.dwFontSize.X = 10;
-    SetCurrentConsoleFontEx(hConsole, TRUE, &fontInfo);
+    //GetCurrentConsoleFontEx(hConsole, TRUE, &fontInfo);
+    /*fontInfo.cbSize = sizeof fontInfo;
+    fontInfo.nFont = 0;
+    fontInfo.dwFontSize.X = 0;
+    fontInfo.dwFontSize.Y = 15;
+    fontInfo.FontFamily = FF_DONTCARE;
+    fontInfo.FontWeight = FW_NORMAL;
+    SetCurrentConsoleFontEx(hConsole, TRUE, &fontInfo);*/
 
     cout << "Hello World!\n";
 

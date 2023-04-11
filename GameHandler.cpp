@@ -6,11 +6,15 @@ GameHandler::GameHandler(int borderTop, int borderRight) {
 }
 
 void GameHandler::start() {
-	PlayerObject* player = new PlayerObject(3, 2, gameBorderRight, gameBorderTop);
+	PlayerObject* player = new PlayerObject(3, 0, gameBorderRight, gameBorderTop);
 	enemies.push_back(player);
 
-	RabbitEnemy* rab = new RabbitEnemy(20, 6, gameBorderRight, gameBorderTop);
-	enemies.push_back(rab);
+	for (int i = 0; i < 5; i++) {
+		int rabX = 5 + rand() % (gameBorderRight - 5);
+		int rabY = 5 + rand() % (gameBorderTop - 5);
+		RabbitEnemy* rab = new RabbitEnemy(rabX, rabY, gameBorderRight, gameBorderTop);
+		enemies.push_back(rab);
+	}
 
 	status = PLAYING;
 }
@@ -31,12 +35,14 @@ GameObject::Matrix GameHandler::getGameMatrix(int screenWidth, int screenHeight)
 	if (status == PLAYING) {
 		for (auto& enemy : enemies) {
 			int enemyOtnX = enemy->getX() - screenPlayerOffsetX;
-			int enemyOtnY = enemy->getY() - screenPlayerOffsetY;
 			if (enemy->getX() >= screenPlayerOffsetX && enemy->getY() >= screenPlayerOffsetY) {
 				GameObject::Matrix enemyMatrix = enemy->getMatrix();
 				size_t enemyHeight = enemyMatrix.size();
-				for (int i = 0; i < enemyHeight; i++) {
-					int locY = enemyOtnY + i;
+				int enemyOtnY = enemy->getY() + enemyHeight - screenPlayerOffsetY;
+				for(int i = 0; i < enemyHeight; i++) {
+					int locY = screenHeight - enemyOtnY + i;
+					if (locY >= screenHeight || locY < 0) continue;
+
 					std::vector<char> lineChars = gameMatrix[locY];
 					size_t enemyWidth = enemyMatrix[i].size();
 					for (int j = 0; j < enemyWidth; j++) {
@@ -49,7 +55,6 @@ GameObject::Matrix GameHandler::getGameMatrix(int screenWidth, int screenHeight)
 						lineChars[locX] = symbol;
 					}
 
-					if (locY >= screenHeight || locY < 0) continue;
 					gameMatrix[locY] = lineChars;
 				}
 			}
@@ -142,7 +147,7 @@ void GameHandler::printMatrix(int screenWidth, int screenHeight) {
 			for (int j = 0; j < currentMatrix[i].size(); j++) {
 				matrixLine[j] = currentMatrix[i][j];
 				if (matrixLine[j] != ' ') isEmptyLine = false;
-			}
+				}
 
 			if (isEmptyLine) std::cout << std::endl;
 			else std::cout << std::string(matrixLine.begin(), matrixLine.end()) << std::endl;
@@ -166,8 +171,8 @@ void GameHandler::process(int screenWidth, int screenHeight, PRESSED_KEYS key) {
 	if (status == PLAYING) {
 		auto pl = getPlayer();
 		if (pl != NULL) {
-			if (key == UP) pl->setDiffY(-1);
-			else if (key == DOWN) pl->setDiffY(1);
+			if (key == UP) pl->setDiffY(1);
+			else if (key == DOWN) pl->setDiffY(-1);
 			else if (key == LEFT) pl->setDiffX(-1);
 			else if (key == RIGHT) pl->setDiffX(1);
 		}
@@ -177,8 +182,7 @@ void GameHandler::process(int screenWidth, int screenHeight, PRESSED_KEYS key) {
 			for (auto enemy2 : enemies) {
 				if (enemy == enemy2) continue;
 				auto castedEnemy2 = dynamic_cast<GameObject*>(enemy2);
-				if (enemy->isCollisingWith(*castedEnemy2)) 
-					enemy->executeCollision(castedEnemy2);
+				if (enemy->isCollisingWith(*castedEnemy2)) enemy->executeCollision(castedEnemy2);
 			}
 
 			enemy->process();
@@ -186,9 +190,15 @@ void GameHandler::process(int screenWidth, int screenHeight, PRESSED_KEYS key) {
 			enemy->setDiffY(0);
 		}
 
-		/*int otnY = player->getY() + player->getHeight() - screenPlayerOffsetY;
-		if (otnY > screenHeight) screenPlayerOffsetY++;
-		else if (otnY < 0) screenPlayerOffsetY--;*/
+		if (pl != NULL) {
+			int otnY = pl->getY() + pl->getHeight() - screenPlayerOffsetY;
+			if (otnY > screenHeight && screenPlayerOffsetY < getTopBorder()) screenPlayerOffsetY++;
+			else if (otnY <= pl->getHeight() && screenPlayerOffsetY > 0) screenPlayerOffsetY--;
+
+			int otnX = pl->getX() - screenPlayerOffsetX;
+			if (otnX > (screenWidth - pl->getWidth()) && screenPlayerOffsetX < getRightBorder()) screenPlayerOffsetX++;
+			else if (otnX <= 0 && screenPlayerOffsetX > 0) screenPlayerOffsetX--;
+		}
 	}
 
 	printMatrix(screenWidth, screenHeight);
