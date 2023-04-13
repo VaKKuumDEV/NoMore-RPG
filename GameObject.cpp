@@ -65,4 +65,7 @@ void GameObject::executeCollision(GameObject* obj) {
 void GameObject::cancelMoving() {
 	x -= diffX;
 	y -= diffY;
+
+	diffX = 0;
+	diffY = 0;
 }

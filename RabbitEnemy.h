@@ -8,5 +8,6 @@ public:
 	GameObject::Matrix getMatrix() override;
 	void process() override;
 	void preprocess() override;
+	bool isThick() override { return false; }
 };
 

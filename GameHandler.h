@@ -2,6 +2,7 @@
 #include "PlayerObject.h"
 #include "LivingGameObject.h"
 #include "RabbitEnemy.h"
+#include "BorderDecorObject.h"
 #include <tuple>
 #include <iostream>
 #include <Windows.h>
@@ -32,10 +33,9 @@ public:
 private:
 	GameStatuses status = NOT_INITED;
 	GameObject::Matrix lastGameMatrix;
-	//PlayerObject* player = NULL;
 	int screenPlayerOffsetX = 0, screenPlayerOffsetY = 0;
 	int gameBorderTop, gameBorderRight;
-	std::vector<LivingGameObject*> enemies;
+	std::vector<GameObject*> enemies;
 	GameObject::Matrix getGameMatrix(int screenWidth, int screenHeight);
 	std::list<GameHandler::MatrixDiff> getMatrixesDiff(GameObject::Matrix lastMatrix, GameObject::Matrix nextMatrix);
 	void ClearScreen();

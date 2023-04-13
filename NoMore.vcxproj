@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BorderDecorObject.cpp" />
     <ClCompile Include="DecorGameObject.cpp" />
     <ClCompile Include="GameHandler.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -136,6 +137,7 @@
     <ClCompile Include="RabbitEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BorderDecorObject.h" />
     <ClInclude Include="DecorGameObject.h" />
     <ClInclude Include="GameHandler.h" />
     <ClInclude Include="GameObject.h" />

@@ -77,7 +77,10 @@ GameObject::Matrix PlayerObject::getMatrix() {
 
 void PlayerObject::executeCollision(GameObject* obj) {
 	auto castedToLivingObject = dynamic_cast<LivingGameObject*>(obj);
-	if (castedToLivingObject != NULL) cancelMoving();
+	if (castedToLivingObject != NULL && !castedToLivingObject->isThick()) cancelMoving();
+
+	auto castedToDecorObject = dynamic_cast<DecorGameObject*>(obj);
+	if (castedToDecorObject != NULL && !castedToDecorObject->isThickingObject()) cancelMoving();
 }
 
 void PlayerObject::process() {

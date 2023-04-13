@@ -1,4 +1,5 @@
 #include "LivingGameObject.h"
+#include "DecorGameObject.h"
 
 #pragma once
 class PlayerObject: public LivingGameObject

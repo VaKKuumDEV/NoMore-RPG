@@ -46,6 +46,7 @@ public:
 	EnemyActions getAction() { return action; }
 	bool isInVisionPole(int x, int y);
 	void setWalkingAnimation();
+	virtual bool isThick() { return true; }
 	void process() override;
 };
 
