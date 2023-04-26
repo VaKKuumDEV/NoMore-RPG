@@ -4,11 +4,12 @@
 class BorderDecorObject : public DecorGameObject
 {
 private:
-	int screenWidth = 0, screenHeight = 0;
+	int screenWidth = 0, screenHeight = 0, screenOffsetX = 0, screenOffsetY = 0;
 public:
 	BorderDecorObject(int borderX, int borderY);
 	GameObject::Point getScreen() { return GameObject::Point{ screenWidth, screenHeight }; }
-	void setScreen(GameObject::Point point) { screenWidth = point.x; screenHeight = point.y; }
+	GameObject::Point getOffset() { return GameObject::Point{ screenOffsetX, screenOffsetY }; }
+	void setScreen(GameObject::Point pointScreen, GameObject::Point pointOffset) { screenWidth = pointScreen.x; screenHeight = pointScreen.y; screenOffsetX = pointOffset.x; screenOffsetY = pointOffset.y; }
 	void process() override;
 	void preprocess() override;
 	GameObject::Matrix getMatrix() override;

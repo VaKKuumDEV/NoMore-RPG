@@ -40,7 +40,6 @@ GameObject::Matrix GameHandler::getGameMatrix(int screenWidth, int screenHeight)
 	
 	if (status == PLAYING) {
 		for (auto& enemy : enemies) {
-			//здесь можно переписать так, чтобы циклы проходили только по видимой части матрицы
 			int enemyOtnX = enemy->getX() - screenPlayerOffsetX;
 			GameObject::Matrix enemyMatrix = enemy->getMatrix();
 			size_t enemyHeight = enemyMatrix.size();
@@ -188,6 +187,10 @@ void GameHandler::process(int screenWidth, int screenHeight, PRESSED_KEYS key) {
 			enemy->preprocess();
 			for (auto enemy2 : enemies) {
 				if (enemy == enemy2) continue;
+
+				auto castedToBorderObject = dynamic_cast<BorderDecorObject*>(enemy2);
+				if (castedToBorderObject != NULL) castedToBorderObject->setScreen(GameObject::Point{ screenWidth, screenHeight }, GameObject::Point{ screenPlayerOffsetX, screenPlayerOffsetY });
+
 				if (enemy->isCollisingWith(*enemy2)) enemy->executeCollision(enemy2);
 			}
 
