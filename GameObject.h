@@ -11,6 +11,7 @@ public:
 private:
 	int x, y, diffX = 0, diffY = 0;
 	int borderX, borderY;
+	bool closed = false;
 public:
 	using Matrix = std::vector<std::vector<char>>;
 	GameObject(int x, int y, int borderX, int borderY);
@@ -27,6 +28,8 @@ public:
 	Point getPoint() { return Point{ x = this->x, y = this->y }; }
 	int getWidth();
 	int getHeight();
+	bool isClosed() { return closed; }
+	void setClosed() { closed = true; }
 	bool isCollisingWith(Matrix matr, int x, int y, int width, int height);
 	bool isCollisingWith(GameObject& obj);
 	void cancelMoving();

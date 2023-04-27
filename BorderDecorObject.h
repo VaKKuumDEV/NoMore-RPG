@@ -6,6 +6,7 @@ class BorderDecorObject : public DecorGameObject
 private:
 	int screenWidth = 0, screenHeight = 0, screenOffsetX = 0, screenOffsetY = 0;
 public:
+	const char SYMBOL = '*';
 	BorderDecorObject(int borderX, int borderY);
 	GameObject::Point getScreen() { return GameObject::Point{ screenWidth, screenHeight }; }
 	GameObject::Point getOffset() { return GameObject::Point{ screenOffsetX, screenOffsetY }; }

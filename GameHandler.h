@@ -41,6 +41,7 @@ private:
 	void ClearScreen();
 	void setCursorPosition(int x, int y);
 	void printMatrix(int screenWidth, int screenHeight);
+	bool isKeyPressed(PRESSED_KEYS key, std::vector<PRESSED_KEYS>& keys);
 public:
 	GameHandler(int borderTop, int borderRight);
 	void start();
@@ -49,5 +50,5 @@ public:
 	PlayerObject* getPlayer();
 	int getTopBorder() { return gameBorderTop; }
 	int getRightBorder() { return gameBorderRight; }
-	void process(int screenWidth, int screenHeight, PRESSED_KEYS key);
+	void process(int screenWidth, int screenHeight, std::vector<PRESSED_KEYS> pressedKeys);
 };

@@ -40,6 +40,7 @@ GameObject::Matrix GameHandler::getGameMatrix(int screenWidth, int screenHeight)
 	
 	if (status == PLAYING) {
 		for (auto& enemy : enemies) {
+			if (enemy->isClosed()) continue;
 			int enemyOtnX = enemy->getX() - screenPlayerOffsetX;
 			GameObject::Matrix enemyMatrix = enemy->getMatrix();
 			size_t enemyHeight = enemyMatrix.size();
@@ -172,15 +173,15 @@ void GameHandler::printMatrix(int screenWidth, int screenHeight) {
 	}
 }
 
-void GameHandler::process(int screenWidth, int screenHeight, PRESSED_KEYS key) {
+void GameHandler::process(int screenWidth, int screenHeight, std::vector<PRESSED_KEYS> pressedKeys) {
 	if (status == PLAYING) {
 		auto pl = getPlayer();
 		if (pl != NULL) {
-			if (key == UP) pl->setDiffY(1);
-			else if (key == DOWN) pl->setDiffY(-1);
+			if (isKeyPressed(UP, pressedKeys)) pl->setDiffY(1);
+			else if (isKeyPressed(DOWN, pressedKeys)) pl->setDiffY(-1);
 
-			if (key == LEFT) pl->setDiffX(-1);
-			else if (key == RIGHT) pl->setDiffX(1);
+			if (isKeyPressed(LEFT, pressedKeys)) pl->setDiffX(-2);
+			else if (isKeyPressed(RIGHT, pressedKeys)) pl->setDiffX(2);
 		}
 
 		for (auto enemy : enemies) {
@@ -205,9 +206,18 @@ void GameHandler::process(int screenWidth, int screenHeight, PRESSED_KEYS key) {
 			else if (otnY <= pl->getHeight() && screenPlayerOffsetY > 0) screenPlayerOffsetY--;
 
 			int otnX = pl->getX() - screenPlayerOffsetX;
-			if (otnX > (screenWidth - pl->getWidth()) && screenPlayerOffsetX < getRightBorder()) screenPlayerOffsetX++;
-			else if (otnX <= 0 && screenPlayerOffsetX > 0) screenPlayerOffsetX--;
+			if (otnX > (screenWidth - pl->getWidth()) && screenPlayerOffsetX < getRightBorder()) screenPlayerOffsetX += 2;
+			else if (otnX <= 0 && screenPlayerOffsetX > 0) screenPlayerOffsetX -= 2;
 		}
+
+		std::vector<GameObject*> newEnemies;
+		for (int enemyIndex = 0; enemyIndex < enemies.size(); enemyIndex++) {
+			if (enemies[enemyIndex]->isClosed()) delete enemies[enemyIndex];
+			else newEnemies.push_back(enemies[enemyIndex]);
+		}
+
+		enemies.clear();
+		for (int i = 0; i < newEnemies.size(); i++) enemies.push_back(newEnemies[i]);
 	}
 
 	printMatrix(screenWidth, screenHeight);
@@ -219,4 +229,12 @@ PlayerObject* GameHandler::getPlayer() {
 		if (t != NULL) return t;
 	}
 	return NULL;
+}
+
+bool GameHandler::isKeyPressed(PRESSED_KEYS key, std::vector<PRESSED_KEYS>& keys) {
+	for (auto pressedKey : keys) {
+		if (key == pressedKey) return true;
+	}
+
+	return false;
 }

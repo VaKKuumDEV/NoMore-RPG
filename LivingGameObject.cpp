@@ -27,7 +27,7 @@ void LivingGameObject::processDamage(int damaged) {
 }
 
 void LivingGameObject::processDeath() {
-
+	setClosed();
 }
 
 void LivingGameObject::addX(int diffX) {
