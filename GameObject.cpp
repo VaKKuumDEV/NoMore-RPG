@@ -41,17 +41,21 @@ bool GameObject::isCollisingWith(Matrix matr, int x, int y, int width, int heigh
 		}
 	}
 
+	int collisionLines = 0;
 	for (int i = matr.size() - 1; i >= 0; i--) {
 		int otnY = y - minY + i;
+		bool hasCollisionInLine = false;
 		for (int j = 0; j < matr[i].size(); j++) {
 			if (matr[i][j] == ' ') continue;
 
 			int otnX = x - minX + j;
-			if (collisedMatrix[otnY][otnX] != ' ') return true;
+			if (collisedMatrix[otnY][otnX] != ' ') hasCollisionInLine = true;
 		}
+
+		if (hasCollisionInLine) collisionLines++;
 	}
 
-	return false;
+	return collisionLines > 0;
 }
 
 bool GameObject::isCollisingWith(GameObject& obj) {

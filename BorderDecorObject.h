@@ -14,4 +14,6 @@ public:
 	void process() override;
 	void preprocess() override;
 	GameObject::Matrix getMatrix() override;
+	int getX() override { return screenOffsetX; }
+	int getY() override { return screenOffsetY; }
 };

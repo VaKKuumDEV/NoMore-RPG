@@ -1,6 +1,6 @@
 #include "PlayerObject.h"
 
-PlayerObject::PlayerObject(int x, int y, int borderX, int borderY) : LivingGameObject(x, y, borderX, borderY, 10, 10, 2, PLAYER) {
+PlayerObject::PlayerObject(int x, int y, int borderX, int borderY) : LivingGameObject(x, y, borderX, borderY, 10, 10, 7, PLAYER) {
 
 }
 
@@ -63,6 +63,19 @@ GameObject::Matrix PlayerObject::getMatrix() {
 			{ '#', ' ', ' ', '#' },
 		};
 	}
+	else if (getAction() == DAMAGING) {
+		matr = {
+			{ ' ', '#', '#', ' ', ' ', ' ' },
+			{ ' ', '#', '#', ' ', ' ', ' ' },
+			{ '#', '#', '#', '#', ' ', ' ' },
+			{ '#', '#', '#', '#', '#', '#' },
+			{ ' ', '#', '#', ' ', ' ', ' ' },
+			{ ' ', '#', '#', ' ', ' ', ' ' },
+			{ ' ', ' ', '#', '#', ' ', ' ' },
+			{ ' ', '#', '#', ' ', ' ', ' ' },
+			{ ' ', '#', '#', ' ', ' ', ' ' },
+		};
+	}
 
 	if (getOrientation() == LEFT) {
 		for (int i = 0; i < matr.size(); i++) {
@@ -75,12 +88,14 @@ GameObject::Matrix PlayerObject::getMatrix() {
 	return matr;
 }
 
-void PlayerObject::executeCollision(GameObject* obj) {
-	auto castedToLivingObject = dynamic_cast<LivingGameObject*>(obj);
-	if (castedToLivingObject != NULL && !castedToLivingObject->isThick()) cancelMoving();
+void PlayerObject::executeDamage(LivingGameObject* obj) {
+	LivingGameObject::executeDamage(obj);
 
-	auto castedToDecorObject = dynamic_cast<DecorGameObject*>(obj);
-	if (castedToDecorObject != NULL && !castedToDecorObject->isThickingObject()) cancelMoving();
+	obj->applyDamage(DAMAGE);
+}
+
+void PlayerObject::executeCollision(GameObject* obj) {
+	LivingGameObject::executeCollision(obj);
 }
 
 void PlayerObject::process() {

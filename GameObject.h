@@ -7,7 +7,6 @@ public:
 	struct Point {
 		int x, y;
 	};
-	const char T = '@';
 private:
 	int x, y, diffX = 0, diffY = 0;
 	int borderX, borderY;
@@ -15,8 +14,8 @@ private:
 public:
 	using Matrix = std::vector<std::vector<char>>;
 	GameObject(int x, int y, int borderX, int borderY);
-	int getX() { return x; }
-	int getY() { return y; }
+	virtual int getX() { return x; }
+	virtual int getY() { return y; }
 	int getDiffX() { return diffX; }
 	int getDiffY() { return diffY; }
 	void setDiffX(int dX) { diffX = dX; }

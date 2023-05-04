@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "DecorGameObject.h"
 
 #pragma once
 class LivingGameObject: public GameObject
@@ -35,8 +36,8 @@ public:
 	bool isLive() { return health > 0; }
 	Orientation getOrientation() { return currentOrientation; }
 	void heal(int healPoints);
-	void applyDamage(int damagePoints);
-	void processDamage(int damaged);
+	virtual void applyDamage(int damagePoints);
+	virtual int processDamage(int damaged);
 	void processDeath();
 	void addX(int diffX);
 	void addY(int diffY);
@@ -44,9 +45,12 @@ public:
 	double getRadius() { return visionRadius; }
 	EnemyTypes getType() { return type; }
 	EnemyActions getAction() { return action; }
-	bool isInVisionPole(int x, int y);
+	bool isInVisionPole(int x, int y, int width, int height);
 	void setWalkingAnimation();
+	void setDamagingAnimation();
 	virtual bool isThick() { return true; }
+	virtual void executeDamage(LivingGameObject* obj);
 	void process() override;
+	void executeCollision(GameObject* obj) override;
 };
 

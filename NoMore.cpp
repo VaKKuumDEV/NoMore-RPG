@@ -76,6 +76,7 @@ vector<GameHandler::PRESSED_KEYS> keyControl() {
     if (IsPress('s') || IsPress('S')) pressedKeys.push_back(GameHandler::PRESSED_KEYS::DOWN);
     if (IsPress('a') || IsPress('A')) pressedKeys.push_back(GameHandler::PRESSED_KEYS::LEFT);
     if (IsPress('d') || IsPress('D')) pressedKeys.push_back(GameHandler::PRESSED_KEYS::RIGHT);
+    if (IsPress(' ')) pressedKeys.push_back(GameHandler::PRESSED_KEYS::SPACE);
     
     return pressedKeys;
 }

@@ -175,6 +175,11 @@ void GameHandler::printMatrix(int screenWidth, int screenHeight) {
 
 void GameHandler::process(int screenWidth, int screenHeight, std::vector<PRESSED_KEYS> pressedKeys) {
 	if (status == PLAYING) {
+		for (auto enemy : enemies) {
+			auto castedToBorderObject = dynamic_cast<BorderDecorObject*>(enemy);
+			if (castedToBorderObject != NULL) castedToBorderObject->setScreen(GameObject::Point{ screenWidth, screenHeight }, GameObject::Point{ screenPlayerOffsetX, screenPlayerOffsetY });
+		}
+
 		auto pl = getPlayer();
 		if (pl != NULL) {
 			if (isKeyPressed(UP, pressedKeys)) pl->setDiffY(1);
@@ -182,32 +187,34 @@ void GameHandler::process(int screenWidth, int screenHeight, std::vector<PRESSED
 
 			if (isKeyPressed(LEFT, pressedKeys)) pl->setDiffX(-2);
 			else if (isKeyPressed(RIGHT, pressedKeys)) pl->setDiffX(2);
+
+			if (isKeyPressed(SPACE, pressedKeys)) {
+				pl->setDamagingAnimation();
+				for (auto enemy : enemies) {
+					auto castedToLivingObject = dynamic_cast<LivingGameObject*>(enemy);
+					if (castedToLivingObject != NULL && pl->isInVisionPole(castedToLivingObject->getX(), castedToLivingObject->getY(), castedToLivingObject->getWidth(), castedToLivingObject->getHeight())) pl->executeDamage(castedToLivingObject);
+				}
+			}
+
+			int otnY = (pl->getY() + pl->getDiffY()) + pl->getHeight() - screenPlayerOffsetY + 1;
+			if (otnY > screenHeight && screenPlayerOffsetY < getTopBorder()) screenPlayerOffsetY++;
+			else if (otnY <= pl->getHeight() && screenPlayerOffsetY > 0) screenPlayerOffsetY--;
+
+			int otnX = (pl->getX() + pl->getDiffX()) - screenPlayerOffsetX;
+			if (otnX > (screenWidth - pl->getWidth()) && screenPlayerOffsetX < getRightBorder()) screenPlayerOffsetX += 2;
+			else if (otnX <= 0 && screenPlayerOffsetX > 0) screenPlayerOffsetX -= 2;
 		}
 
 		for (auto enemy : enemies) {
 			enemy->preprocess();
 			for (auto enemy2 : enemies) {
 				if (enemy == enemy2) continue;
-
-				auto castedToBorderObject = dynamic_cast<BorderDecorObject*>(enemy2);
-				if (castedToBorderObject != NULL) castedToBorderObject->setScreen(GameObject::Point{ screenWidth, screenHeight }, GameObject::Point{ screenPlayerOffsetX, screenPlayerOffsetY });
-
 				if (enemy->isCollisingWith(*enemy2)) enemy->executeCollision(enemy2);
 			}
 
 			enemy->process();
 			enemy->setDiffX(0);
 			enemy->setDiffY(0);
-		}
-
-		if (pl != NULL) {
-			int otnY = pl->getY() + pl->getHeight() - screenPlayerOffsetY;
-			if (otnY > screenHeight && screenPlayerOffsetY < getTopBorder()) screenPlayerOffsetY++;
-			else if (otnY <= pl->getHeight() && screenPlayerOffsetY > 0) screenPlayerOffsetY--;
-
-			int otnX = pl->getX() - screenPlayerOffsetX;
-			if (otnX > (screenWidth - pl->getWidth()) && screenPlayerOffsetX < getRightBorder()) screenPlayerOffsetX += 2;
-			else if (otnX <= 0 && screenPlayerOffsetX > 0) screenPlayerOffsetX -= 2;
 		}
 
 		std::vector<GameObject*> newEnemies;

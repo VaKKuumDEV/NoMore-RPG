@@ -7,14 +7,18 @@ LivingGameObject::LivingGameObject(int x, int y, int borderX, int borderY, int h
 	this->visionRadius = radius;
 }
 
-bool LivingGameObject::isInVisionPole(int x, int y) {
-	return pow((double)x - getX(), 2) + pow((double)y - getY(), 2) <= visionRadius;
+bool LivingGameObject::isInVisionPole(int x, int y, int width, int height) {
+	int centerX = getWidth() / 2;
+	int centerY = getHeight() / 2;
+
+	return pow((double)x - (getX() + centerX), 2) + pow((double)y - (getY() + centerY), 2) <= visionRadius;
 }
 
 void LivingGameObject::applyDamage(int damagePoints) {
-	this->health -= damagePoints;
+	int calculatedDamage = processDamage(damagePoints);
+
+	this->health -= calculatedDamage;
 	if (this->health <= 0) processDeath();
-	else processDamage(damagePoints);
 }
 
 void LivingGameObject::heal(int healPoints) {
@@ -22,8 +26,8 @@ void LivingGameObject::heal(int healPoints) {
 	if (this->health > this->maxHealth) this->health = this->maxHealth;
 }
 
-void LivingGameObject::processDamage(int damaged) {
-
+int LivingGameObject::processDamage(int damaged) {
+	return damaged;
 }
 
 void LivingGameObject::processDeath() {
@@ -86,5 +90,26 @@ void LivingGameObject::process()
 			action = STAING_FIRST;
 			skippingTicks = ACTION_SKIP;
 		}
+		else if (action == DAMAGING) {
+			action = STAING_FIRST;
+			skippingTicks = ACTION_SKIP;
+		}
 	}
+}
+
+void LivingGameObject::executeCollision(GameObject* obj) {
+	auto castedToLivingObject = dynamic_cast<LivingGameObject*>(obj);
+	if (castedToLivingObject != NULL && !castedToLivingObject->isThick()) cancelMoving();
+
+	auto castedToDecorObject = dynamic_cast<DecorGameObject*>(obj);
+	if (castedToDecorObject != NULL && !castedToDecorObject->isThickingObject()) cancelMoving();
+}
+
+void LivingGameObject::setDamagingAnimation() {
+	action = DAMAGING;
+	skippingTicks = ACTION_SKIP / 2;
+}
+
+void LivingGameObject::executeDamage(LivingGameObject* obj) {
+	if (obj->isClosed()) return;
 }

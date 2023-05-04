@@ -20,6 +20,7 @@ public:
 		DOWN,
 		LEFT,
 		RIGHT,
+		SPACE,
 	};
 	enum GameStatuses {
 		NOT_INITED,
