@@ -8,9 +8,11 @@ public:
 		int x, y;
 	};
 private:
-	int x, y, diffX = 0, diffY = 0;
+	int diffX = 0, diffY = 0;
 	int borderX, borderY;
 	bool closed = false;
+protected:
+	int x, y;
 public:
 	using Matrix = std::vector<std::vector<char>>;
 	GameObject(int x, int y, int borderX, int borderY);
@@ -29,11 +31,11 @@ public:
 	int getHeight();
 	bool isClosed() { return closed; }
 	void setClosed() { closed = true; }
-	bool isCollisingWith(Matrix matr, int x, int y, int width, int height);
-	bool isCollisingWith(GameObject& obj);
+	virtual bool isCollisingWith(Matrix matr, int x, int y, int width, int height);
+	virtual bool isCollisingWith(GameObject& obj);
 	void cancelMoving();
 	virtual void executeCollision(GameObject* obj);
 	virtual Matrix getMatrix() = 0;
-	virtual void preprocess() = 0;
+	virtual void preprocess();
 	virtual void process() = 0;
 };

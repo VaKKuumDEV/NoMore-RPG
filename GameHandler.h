@@ -3,6 +3,7 @@
 #include "LivingGameObject.h"
 #include "RabbitEnemy.h"
 #include "BorderDecorObject.h"
+#include "LabelObject.h"
 #include <tuple>
 #include <iostream>
 #include <Windows.h>
@@ -41,14 +42,15 @@ private:
 	std::list<GameHandler::MatrixDiff> getMatrixesDiff(GameObject::Matrix lastMatrix, GameObject::Matrix nextMatrix);
 	void ClearScreen();
 	void setCursorPosition(int x, int y);
-	void printMatrix(int screenWidth, int screenHeight);
 	bool isKeyPressed(PRESSED_KEYS key, std::vector<PRESSED_KEYS>& keys);
+	void printMatrix(int screenWidth, int screenHeight);
 public:
 	GameHandler(int borderTop, int borderRight);
 	void start();
 	void stop();
 	GameStatuses getStatus() { return status; }
 	PlayerObject* getPlayer();
+	void addEnemy(GameObject* enemy) { enemies.push_back(enemy); }
 	int getTopBorder() { return gameBorderTop; }
 	int getRightBorder() { return gameBorderRight; }
 	void process(int screenWidth, int screenHeight, std::vector<PRESSED_KEYS> pressedKeys);

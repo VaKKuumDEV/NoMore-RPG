@@ -10,8 +10,8 @@ void GameHandler::start() {
 	enemies.push_back(player);
 
 	for (int i = 0; i < 5; i++) {
-		int rabX = 10 + rand() % (gameBorderRight - 10);
-		int rabY = 10 + rand() % (gameBorderTop - 10);
+		int rabX = 10 + rand() % (gameBorderRight - 20);
+		int rabY = 10 + rand() % (gameBorderTop - 20);
 		RabbitEnemy* rab = new RabbitEnemy(rabX, rabY, gameBorderRight, gameBorderTop);
 
 		bool isLeft = 1 + rand() % 2 == 1 ? true : false;
@@ -191,24 +191,35 @@ void GameHandler::process(int screenWidth, int screenHeight, std::vector<PRESSED
 			if (isKeyPressed(SPACE, pressedKeys)) {
 				pl->setDamagingAnimation();
 				for (auto enemy : enemies) {
+					if (enemy == NULL ||enemy == pl) continue;
 					auto castedToLivingObject = dynamic_cast<LivingGameObject*>(enemy);
-					if (castedToLivingObject != NULL && pl->isInVisionPole(castedToLivingObject->getX(), castedToLivingObject->getY(), castedToLivingObject->getWidth(), castedToLivingObject->getHeight())) pl->executeDamage(castedToLivingObject);
+					if (castedToLivingObject != NULL && pl->isInVisionPole(castedToLivingObject->getX(), castedToLivingObject->getY(), castedToLivingObject->getWidth(), castedToLivingObject->getHeight())) {
+						int damage = pl->executeDamage(castedToLivingObject);
+
+						if (damage > 0) {
+							int labelX = castedToLivingObject->getX() + rand() % (castedToLivingObject->getWidth() + 3);
+							int labelY = castedToLivingObject->getY() + rand() % (castedToLivingObject->getHeight() + 3);
+
+							LabelObject* damageLabel = new LabelObject("-" + std::to_string(damage), true, 40, labelX, labelY, getRightBorder(), getTopBorder());
+							addEnemy(damageLabel);
+						}
+					}
 				}
 			}
 
 			int otnY = (pl->getY() + pl->getDiffY()) + pl->getHeight() - screenPlayerOffsetY + 1;
-			if (otnY > screenHeight && screenPlayerOffsetY < getTopBorder()) screenPlayerOffsetY++;
-			else if (otnY <= pl->getHeight() && screenPlayerOffsetY > 0) screenPlayerOffsetY--;
+			if (otnY > screenHeight && screenPlayerOffsetY < getTopBorder()) screenPlayerOffsetY += 1;
+			else if (otnY <= pl->getHeight() && screenPlayerOffsetY > 0) screenPlayerOffsetY -= 1;
 
 			int otnX = (pl->getX() + pl->getDiffX()) - screenPlayerOffsetX;
-			if (otnX > (screenWidth - pl->getWidth()) && screenPlayerOffsetX < getRightBorder()) screenPlayerOffsetX += 2;
-			else if (otnX <= 0 && screenPlayerOffsetX > 0) screenPlayerOffsetX -= 2;
+			if (otnX > (screenWidth - pl->getWidth()) && screenPlayerOffsetX < getRightBorder()) screenPlayerOffsetX += pl->getWidth();
+			else if (otnX <= 0 && screenPlayerOffsetX > 0) screenPlayerOffsetX -= pl->getWidth();
 		}
 
 		for (auto enemy : enemies) {
 			enemy->preprocess();
 			for (auto enemy2 : enemies) {
-				if (enemy == enemy2) continue;
+				if (enemy == NULL || enemy == enemy2) continue;
 				if (enemy->isCollisingWith(*enemy2)) enemy->executeCollision(enemy2);
 			}
 

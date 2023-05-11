@@ -131,6 +131,7 @@
     <ClCompile Include="DecorGameObject.cpp" />
     <ClCompile Include="GameHandler.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="LabelObject.cpp" />
     <ClCompile Include="LivingGameObject.cpp" />
     <ClCompile Include="NoMore.cpp" />
     <ClCompile Include="PlayerObject.cpp" />
@@ -141,6 +142,7 @@
     <ClInclude Include="DecorGameObject.h" />
     <ClInclude Include="GameHandler.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="LabelObject.h" />
     <ClInclude Include="LivingGameObject.h" />
     <ClInclude Include="PlayerObject.h" />
     <ClInclude Include="RabbitEnemy.h" />

@@ -7,7 +7,7 @@ public:
 	const int DAMAGE = 2;
 	PlayerObject(int x, int y, int borderX, int borderY);
 	void executeCollision(GameObject* obj) override;
-	void executeDamage(LivingGameObject* obj) override;
+	int executeDamage(LivingGameObject* obj) override;
 	GameObject::Matrix getMatrix() override;
 	void process() override;
 	void preprocess() override;

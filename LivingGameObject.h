@@ -36,7 +36,7 @@ public:
 	bool isLive() { return health > 0; }
 	Orientation getOrientation() { return currentOrientation; }
 	void heal(int healPoints);
-	virtual void applyDamage(int damagePoints);
+	virtual int applyDamage(int damagePoints);
 	virtual int processDamage(int damaged);
 	void processDeath();
 	void addX(int diffX);
@@ -49,7 +49,7 @@ public:
 	void setWalkingAnimation();
 	void setDamagingAnimation();
 	virtual bool isThick() { return true; }
-	virtual void executeDamage(LivingGameObject* obj);
+	virtual int executeDamage(LivingGameObject* obj);
 	void process() override;
 	void executeCollision(GameObject* obj) override;
 };

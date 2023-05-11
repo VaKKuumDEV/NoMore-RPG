@@ -8,17 +8,26 @@ LivingGameObject::LivingGameObject(int x, int y, int borderX, int borderY, int h
 }
 
 bool LivingGameObject::isInVisionPole(int x, int y, int width, int height) {
-	int centerX = getWidth() / 2;
-	int centerY = getHeight() / 2;
+	int centerX = getX() + getWidth() / 2;
+	int centerY = getY() + getHeight() / 2;
 
-	return pow((double)x - (getX() + centerX), 2) + pow((double)y - (getY() + centerY), 2) <= visionRadius;
+	int enemyCenterX = x + width / 2;
+	int enemyCenterY = y + height / 2;
+
+	int xDiff = enemyCenterX - centerX;
+	if (getOrientation() == LEFT && xDiff > 0) return false;
+	else if (getOrientation() == RIGHT && xDiff < 0) return false;
+
+	return sqrt(pow((double)enemyCenterX - centerX, 2) + pow((double)enemyCenterY - centerY, 2)) <= visionRadius;
 }
 
-void LivingGameObject::applyDamage(int damagePoints) {
+int LivingGameObject::applyDamage(int damagePoints) {
 	int calculatedDamage = processDamage(damagePoints);
 
 	this->health -= calculatedDamage;
 	if (this->health <= 0) processDeath();
+
+	return calculatedDamage;
 }
 
 void LivingGameObject::heal(int healPoints) {
@@ -110,6 +119,8 @@ void LivingGameObject::setDamagingAnimation() {
 	skippingTicks = ACTION_SKIP / 2;
 }
 
-void LivingGameObject::executeDamage(LivingGameObject* obj) {
-	if (obj->isClosed()) return;
+int LivingGameObject::executeDamage(LivingGameObject* obj) {
+	if (obj->isClosed()) return 0;
+
+	return 0;
 }

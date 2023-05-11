@@ -88,10 +88,11 @@ GameObject::Matrix PlayerObject::getMatrix() {
 	return matr;
 }
 
-void PlayerObject::executeDamage(LivingGameObject* obj) {
+int PlayerObject::executeDamage(LivingGameObject* obj) {
 	LivingGameObject::executeDamage(obj);
 
-	obj->applyDamage(DAMAGE);
+	int damage = obj->applyDamage(DAMAGE);
+	return damage;
 }
 
 void PlayerObject::executeCollision(GameObject* obj) {

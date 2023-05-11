@@ -66,6 +66,11 @@ void GameObject::executeCollision(GameObject* obj) {
 
 }
 
+void GameObject::preprocess()
+{
+
+}
+
 void GameObject::cancelMoving() {
 	x -= diffX;
 	y -= diffY;
