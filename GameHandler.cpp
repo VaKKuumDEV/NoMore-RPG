@@ -9,9 +9,11 @@ void GameHandler::start() {
 	PlayerObject* player = new PlayerObject(3, 2, gameBorderRight, gameBorderTop);
 	enemies.push_back(player);
 
-	for (int i = 0; i < 5; i++) {
-		int rabX = 10 + rand() % (gameBorderRight - 20);
-		int rabY = 10 + rand() % (gameBorderTop - 20);
+	for (int i = 0; i < 1; i++) {
+		//int rabX = 10 + rand() % (gameBorderRight - 20);
+		int rabX = 20;
+		//int rabY = 10 + rand() % (gameBorderTop - 20);
+		int rabY = 10;
 		RabbitEnemy* rab = new RabbitEnemy(rabX, rabY, gameBorderRight, gameBorderTop);
 
 		bool isLeft = 1 + rand() % 2 == 1 ? true : false;
@@ -190,21 +192,24 @@ void GameHandler::process(int screenWidth, int screenHeight, std::vector<PRESSED
 
 			if (isKeyPressed(SPACE, pressedKeys)) {
 				pl->setDamagingAnimation();
+				std::vector<LabelObject*> damageParticles;
 				for (auto enemy : enemies) {
-					if (enemy == NULL ||enemy == pl) continue;
+					if (enemy == NULL || enemy == pl) continue;
 					auto castedToLivingObject = dynamic_cast<LivingGameObject*>(enemy);
-					if (castedToLivingObject != NULL && pl->isInVisionPole(castedToLivingObject->getX(), castedToLivingObject->getY(), castedToLivingObject->getWidth(), castedToLivingObject->getHeight())) {
+					if (castedToLivingObject != NULL && pl->isInVisionPole(castedToLivingObject->getX(), castedToLivingObject->getY(), castedToLivingObject->getWidth(), castedToLivingObject->getHeight()) && castedToLivingObject->getDamageCooldown() <= 0) {
 						int damage = pl->executeDamage(castedToLivingObject);
 
 						if (damage > 0) {
 							int labelX = castedToLivingObject->getX() + rand() % (castedToLivingObject->getWidth() + 3);
 							int labelY = castedToLivingObject->getY() + rand() % (castedToLivingObject->getHeight() + 3);
 
-							LabelObject* damageLabel = new LabelObject("-" + std::to_string(damage), true, 40, labelX, labelY, getRightBorder(), getTopBorder());
-							addEnemy(damageLabel);
+							LabelObject* damageLabel = new LabelObject("-" + std::to_string(damage), true, TPS, labelX, labelY, getRightBorder(), getTopBorder());
+							damageParticles.push_back(damageLabel);
 						}
 					}
 				}
+
+				for (auto particle : damageParticles) addEnemy(particle);
 			}
 
 			int otnY = (pl->getY() + pl->getDiffY()) + pl->getHeight() - screenPlayerOffsetY + 1;

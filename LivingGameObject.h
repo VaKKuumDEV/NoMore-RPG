@@ -31,6 +31,8 @@ private:
 	int skippingTicks = ACTION_SKIP;
 	EnemyTypes type;
 	EnemyActions action = STAING_FIRST;
+protected:
+	int damageCooldown = 0;
 public:
 	LivingGameObject(int x, int y, int borderX, int borderY, int health, int maxHealth, double radius, EnemyTypes type);
 	bool isLive() { return health > 0; }
@@ -45,6 +47,7 @@ public:
 	double getRadius() { return visionRadius; }
 	EnemyTypes getType() { return type; }
 	EnemyActions getAction() { return action; }
+	int getDamageCooldown() { return damageCooldown; }
 	bool isInVisionPole(int x, int y, int width, int height);
 	void setWalkingAnimation();
 	void setDamagingAnimation();

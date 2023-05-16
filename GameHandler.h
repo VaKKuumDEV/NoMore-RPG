@@ -15,6 +15,7 @@
 #pragma once
 class GameHandler {
 public:
+	static const int TPS = 20;
 	enum PRESSED_KEYS {
 		NONE,
 		UP,

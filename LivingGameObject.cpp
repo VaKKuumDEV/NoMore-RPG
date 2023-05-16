@@ -26,6 +26,7 @@ int LivingGameObject::applyDamage(int damagePoints) {
 
 	this->health -= calculatedDamage;
 	if (this->health <= 0) processDeath();
+	damageCooldown = 10;
 
 	return calculatedDamage;
 }
@@ -53,7 +54,7 @@ void LivingGameObject::addX(int diffX) {
 
 void LivingGameObject::addY(int diffY) {
 	int calculatedY = getY() + diffY;
-	if (calculatedY < 0) calculatedY = 0;
+	if (calculatedY <= 0) calculatedY = 1;
 	else if (calculatedY > getBorderY()) calculatedY = getBorderY();
 
 	setY(calculatedY);
@@ -104,6 +105,8 @@ void LivingGameObject::process()
 			skippingTicks = ACTION_SKIP;
 		}
 	}
+
+	if (damageCooldown > 0) damageCooldown--;
 }
 
 void LivingGameObject::executeCollision(GameObject* obj) {

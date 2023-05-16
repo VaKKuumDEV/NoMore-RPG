@@ -12,7 +12,6 @@
 
 using namespace std;
 
-const int TPS = 20;
 pair<int, int> sizes;
 GameHandler* handler = NULL;
 
@@ -39,7 +38,7 @@ int main()
 
     cout << "Hello World!\n";
 
-    handler = new GameHandler(500, 200);
+    handler = new GameHandler(100, 200);
     handler->start();
 
     thread gameThread = thread(gameHandlerLoop);
@@ -51,7 +50,7 @@ void gameHandlerLoop() {
         sizes = getConsoleSize();
         handler->process(sizes.first, sizes.second, keyControl());
 
-        chrono::milliseconds timespan((int)(1000 / TPS));
+        chrono::milliseconds timespan((int)(1000 / GameHandler::TPS));
         this_thread::sleep_for(timespan);
     }
 }
