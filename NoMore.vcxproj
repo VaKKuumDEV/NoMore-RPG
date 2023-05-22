@@ -132,6 +132,7 @@
     <ClCompile Include="GameHandler.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="LabelObject.cpp" />
+    <ClCompile Include="LittleHouseDecorObject.cpp" />
     <ClCompile Include="LivingGameObject.cpp" />
     <ClCompile Include="NoMore.cpp" />
     <ClCompile Include="PlayerObject.cpp" />
@@ -143,6 +144,7 @@
     <ClInclude Include="GameHandler.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="LabelObject.h" />
+    <ClInclude Include="LittleHouseDecorObject.h" />
     <ClInclude Include="LivingGameObject.h" />
     <ClInclude Include="PlayerObject.h" />
     <ClInclude Include="RabbitEnemy.h" />

@@ -10,10 +10,8 @@ void GameHandler::start() {
 	enemies.push_back(player);
 
 	for (int i = 0; i < 1; i++) {
-		//int rabX = 10 + rand() % (gameBorderRight - 20);
-		int rabX = 20;
-		//int rabY = 10 + rand() % (gameBorderTop - 20);
-		int rabY = 10;
+		int rabX = 10 + rand() % (gameBorderRight - 20);
+		int rabY = 10 + rand() % (gameBorderTop - 20);
 		RabbitEnemy* rab = new RabbitEnemy(rabX, rabY, gameBorderRight, gameBorderTop);
 
 		bool isLeft = 1 + rand() % 2 == 1 ? true : false;
@@ -21,6 +19,9 @@ void GameHandler::start() {
 
 		enemies.push_back(rab);
 	}
+
+	LittleHouseDecorObject* house = new LittleHouseDecorObject(10, 15, gameBorderRight, gameBorderTop);
+	enemies.push_back(house);
 
 	BorderDecorObject* border = new BorderDecorObject(gameBorderRight, gameBorderTop);
 	enemies.push_back(border);
@@ -205,6 +206,7 @@ void GameHandler::process(int screenWidth, int screenHeight, std::vector<PRESSED
 
 							LabelObject* damageLabel = new LabelObject("-" + std::to_string(damage), true, TPS, labelX, labelY, getRightBorder(), getTopBorder());
 							damageParticles.push_back(damageLabel);
+							break;
 						}
 					}
 				}

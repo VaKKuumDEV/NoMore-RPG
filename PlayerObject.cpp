@@ -91,7 +91,7 @@ GameObject::Matrix PlayerObject::getMatrix() {
 int PlayerObject::executeDamage(LivingGameObject* obj) {
 	LivingGameObject::executeDamage(obj);
 
-	int damage = obj->applyDamage(DAMAGE);
+	int damage = obj->applyDamage(MIN_DAMAGE + rand() % (MAX_DAMAGE - MIN_DAMAGE + 1));
 	return damage;
 }
 

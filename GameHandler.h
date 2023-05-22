@@ -4,6 +4,7 @@
 #include "RabbitEnemy.h"
 #include "BorderDecorObject.h"
 #include "LabelObject.h"
+#include "LittleHouseDecorObject.h"
 #include <tuple>
 #include <iostream>
 #include <Windows.h>
