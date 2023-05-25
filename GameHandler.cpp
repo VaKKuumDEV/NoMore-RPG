@@ -23,8 +23,16 @@ void GameHandler::start() {
 	LittleHouseDecorObject* house = new LittleHouseDecorObject(10, 15, gameBorderRight, gameBorderTop);
 	enemies.push_back(house);
 
-	BorderDecorObject* border = new BorderDecorObject(gameBorderRight, gameBorderTop);
-	enemies.push_back(border);
+	/*BorderDecorObject* border = new BorderDecorObject(gameBorderRight, gameBorderTop);
+	enemies.push_back(border);*/
+
+	LabelObject* coordsTip = new LabelObject("", false, 0, 0, 0, gameBorderRight, gameBorderTop);
+	coordsTip->setFormat("Coords: %x%:%y%");
+	tipMessages.push_back(coordsTip);
+
+	LabelObject* healthTip = new LabelObject("", false, 0, 0, 0, gameBorderRight, gameBorderTop);
+	healthTip->setFormat("Health: %health%/%maxHealth%");
+	tipMessages.push_back(healthTip);
 
 	status = PLAYING;
 }
@@ -40,9 +48,13 @@ void GameHandler::stop() {
 
 GameObject::Matrix GameHandler::getGameMatrix(int screenWidth, int screenHeight) {
 	GameObject::Matrix gameMatrix = std::vector<std::vector<char>>(screenHeight, std::vector<char>(screenWidth, ' '));
+
+	std::vector<GameObject*> gameObjects;
+	for (auto enemy : enemies) gameObjects.push_back(enemy);
+	for (auto tip : tipMessages) gameObjects.push_back(tip);
 	
 	if (status == PLAYING) {
-		for (auto& enemy : enemies) {
+		for (auto enemy : gameObjects) {
 			if (enemy->isClosed()) continue;
 			int enemyOtnX = enemy->getX() - screenPlayerOffsetX;
 			GameObject::Matrix enemyMatrix = enemy->getMatrix();
@@ -156,7 +168,7 @@ void GameHandler::printMatrix(int screenWidth, int screenHeight) {
 			for (int j = 0; j < currentMatrix[i].size(); j++) {
 				matrixLine[j] = currentMatrix[i][j];
 				if (matrixLine[j] != ' ') isEmptyLine = false;
-				}
+			}
 
 			if (isEmptyLine) std::cout << std::endl;
 			else std::cout << std::string(matrixLine.begin(), matrixLine.end()) << std::endl;
@@ -227,7 +239,8 @@ void GameHandler::process(int screenWidth, int screenHeight, std::vector<PRESSED
 			enemy->preprocess();
 			for (auto enemy2 : enemies) {
 				if (enemy == NULL || enemy == enemy2) continue;
-				if (enemy->isCollisingWith(*enemy2)) enemy->executeCollision(enemy2);
+				if (enemy->isCollisingWith(*enemy2)) 
+					enemy->executeCollision(enemy2);
 			}
 
 			enemy->process();
@@ -243,6 +256,8 @@ void GameHandler::process(int screenWidth, int screenHeight, std::vector<PRESSED
 
 		enemies.clear();
 		for (int i = 0; i < newEnemies.size(); i++) enemies.push_back(newEnemies[i]);
+
+		processTipMessages(screenWidth, screenHeight);
 	}
 
 	printMatrix(screenWidth, screenHeight);
@@ -262,4 +277,35 @@ bool GameHandler::isKeyPressed(PRESSED_KEYS key, std::vector<PRESSED_KEYS>& keys
 	}
 
 	return false;
+}
+
+void GameHandler::processTipMessages(int screenWidth, int screenHeight) {
+	auto player = getPlayer();
+	for (int i = 0; i < tipMessages.size(); i++) {
+		auto tipMessage = tipMessages[i];
+		tipMessage->setX(2 + screenPlayerOffsetX);
+		tipMessage->setY(screenHeight - 2 + screenPlayerOffsetY - i);
+
+		std::string format = tipMessage->getFormat();
+		if (player != NULL) {
+			format = replace(format, "%x%", std::to_string(player->getX()));
+			format = replace(format, "%y%", std::to_string(player->getY()));
+			format = replace(format, "%health%", std::to_string(player->getHealth()));
+			format = replace(format, "%maxHealth%", std::to_string(player->getMaxHealth()));
+		}
+
+		tipMessage->setText(format);
+	}
+}
+
+std::string GameHandler::replace(const std::string& inputString, const std::string& src, const std::string& dst) {
+	std::string result(inputString);
+
+	size_t pos = result.find(src);
+	while (pos != std::string::npos) {
+		result.replace(pos, src.size(), dst);
+		pos = result.find(src, pos);
+	}
+
+	return result;
 }

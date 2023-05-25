@@ -31,25 +31,31 @@ bool GameObject::isCollisingWith(Matrix matr, int x, int y, int width, int heigh
 	Matrix collisedMatrix = std::vector<std::vector<char>>(diffY, std::vector<char>(diffX, ' '));
 	Matrix thisMatrix = getMatrix();
 
+	int thisOtnY = getY() - minY;
+	int thisOtnX = getX() - minX;
 	for (int i = thisMatrix.size() - 1; i >= 0; i--) {
+		int otnY = thisOtnY + i;
 		for (int j = 0; j < thisMatrix[i].size(); j++) {
 			if (thisMatrix[i][j] == ' ') continue;
 
-			int otnX = getX() - minX + j;
-			int otnY = getY() - minY + i;
+			int otnX = thisOtnX + j;
 			collisedMatrix[otnY][otnX] = thisMatrix[i][j];
 		}
 	}
 
 	int collisionLines = 0;
+	int enemyOtnY = y - minY;
+	int enemyOtnX = x - minX;
 	for (int i = matr.size() - 1; i >= 0; i--) {
-		int otnY = y - minY + i;
+		int otnY = enemyOtnY + i;
 		bool hasCollisionInLine = false;
 		for (int j = 0; j < matr[i].size(); j++) {
 			if (matr[i][j] == ' ') continue;
 
-			int otnX = x - minX + j;
-			if (collisedMatrix[otnY][otnX] != ' ') hasCollisionInLine = true;
+			int otnX = enemyOtnX + j;
+			if (collisedMatrix[otnY][otnX] != ' ') {
+				hasCollisionInLine = true;
+			}
 		}
 
 		if (hasCollisionInLine) collisionLines++;

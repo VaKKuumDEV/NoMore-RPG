@@ -43,6 +43,8 @@ public:
 	void processDeath();
 	void addX(int diffX);
 	void addY(int diffY);
+	int getHealth() { return health; }
+	int getMaxHealth() { return maxHealth; }
 	void setOrientation(bool isLeft);
 	double getRadius() { return visionRadius; }
 	EnemyTypes getType() { return type; }

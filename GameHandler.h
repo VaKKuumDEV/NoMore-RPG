@@ -40,6 +40,7 @@ private:
 	int screenPlayerOffsetX = 0, screenPlayerOffsetY = 0;
 	int gameBorderTop, gameBorderRight;
 	std::vector<GameObject*> enemies;
+	std::vector<LabelObject*> tipMessages;
 	GameObject::Matrix getGameMatrix(int screenWidth, int screenHeight);
 	std::list<GameHandler::MatrixDiff> getMatrixesDiff(GameObject::Matrix lastMatrix, GameObject::Matrix nextMatrix);
 	void ClearScreen();
@@ -56,4 +57,6 @@ public:
 	int getTopBorder() { return gameBorderTop; }
 	int getRightBorder() { return gameBorderRight; }
 	void process(int screenWidth, int screenHeight, std::vector<PRESSED_KEYS> pressedKeys);
+	void processTipMessages(int screenWidth, int screenHeight);
+	std::string replace(const std::string& inputString, const std::string& src, const std::string& dst);
 };
