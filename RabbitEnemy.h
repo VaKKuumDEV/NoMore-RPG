@@ -3,6 +3,8 @@
 #pragma once
 class RabbitEnemy : public LivingGameObject
 {
+private:
+	int walkingTicks = 20;
 public:
 	RabbitEnemy(int x, int y, int borderX, int borderY);
 	GameObject::Matrix getMatrix() override;

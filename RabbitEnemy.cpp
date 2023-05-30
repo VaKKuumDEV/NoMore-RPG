@@ -68,8 +68,26 @@ GameObject::Matrix RabbitEnemy::getMatrix()
 void RabbitEnemy::process()
 {
 	LivingGameObject::process();
+
+	if (getDiffX() != 0 || getDiffY() != 0) setWalkingAnimation();
+	if (getDiffX() >= 0) setOrientation(false);
+	else setOrientation(true);
 }
 
 void RabbitEnemy::preprocess() {
+	LivingGameObject::preprocess();
 
+	if (walkingTicks > 0) walkingTicks--;
+	else {
+		int randX = -3 + rand() % 7;
+		int randY = -3 + rand() % 7;
+
+		setDiffX(randX);
+		setDiffY(randY);
+
+		addX(getDiffX());
+		addY(getDiffY());
+
+		walkingTicks = 20;
+	}
 }
