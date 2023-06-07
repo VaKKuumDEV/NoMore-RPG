@@ -1,6 +1,6 @@
 #include "LabelObject.h"
 
-LabelObject::LabelObject(std::string text, bool isAwaitingDeath, int awaitingDeathTicks, int x, int y, int borderX, int borderY) : DecorGameObject(x, y, borderX, borderY, true)
+LabelObject::LabelObject(std::string text, bool isAwaitingDeath, int awaitingDeathTicks, int x, int y, int borderX, int borderY) : DecorGameObject(x, y, borderX, borderY)
 {
 	this->text = text;
 	this->awaitDeath = isAwaitingDeath;

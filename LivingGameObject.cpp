@@ -7,6 +7,13 @@ LivingGameObject::LivingGameObject(int x, int y, int borderX, int borderY, int h
 	this->visionRadius = radius;
 }
 
+double LivingGameObject::getDistance(int x, int y) {
+	int centerX = getX() + getWidth() / 2;
+	int centerY = getY() + getHeight() / 2;
+
+	return sqrt(pow((double)x - centerX, 2) + pow((double)y - centerY, 2));
+}
+
 bool LivingGameObject::isInVisionPole(int x, int y, int width, int height) {
 	int centerX = getX() + getWidth() / 2;
 	int centerY = getY() + getHeight() / 2;
@@ -17,11 +24,12 @@ bool LivingGameObject::isInVisionPole(int x, int y, int width, int height) {
 	int xDiff = enemyCenterX - centerX;
 	if (getOrientation() == LEFT && xDiff > 0) return false;
 	else if (getOrientation() == RIGHT && xDiff < 0) return false;
+	double distance = getDistance(enemyCenterX, enemyCenterY);
 
-	return sqrt(pow((double)enemyCenterX - centerX, 2) + pow((double)enemyCenterY - centerY, 2)) <= visionRadius;
+	return distance <= visionRadius;
 }
 
-int LivingGameObject::applyDamage(int damagePoints) {
+int LivingGameObject::applyDamage(int damagePoints, LivingGameObject* damager) {
 	int calculatedDamage = processDamage(damagePoints);
 
 	this->health -= calculatedDamage;
@@ -54,7 +62,7 @@ void LivingGameObject::addX(int diffX) {
 
 void LivingGameObject::addY(int diffY) {
 	int calculatedY = getY() + diffY;
-	if (calculatedY <= 0) calculatedY = 1;
+	if (calculatedY < 0) calculatedY = 0;
 	else if (calculatedY > getBorderY()) calculatedY = getBorderY();
 
 	setY(calculatedY);
@@ -82,6 +90,10 @@ void LivingGameObject::setWalkingAnimation()
 
 void LivingGameObject::process()
 {
+	if (getDiffX() != 0 || getDiffY() != 0) setWalkingAnimation();
+	if (getDiffX() > 0) setOrientation(false);
+	else if(getDiffX() < 0) setOrientation(true);
+
 	if (skippingTicks > 0) skippingTicks--;
 	else {
 		if (action == STAING_FIRST) {
@@ -110,11 +122,10 @@ void LivingGameObject::process()
 }
 
 void LivingGameObject::executeCollision(GameObject* obj) {
-	auto castedToLivingObject = dynamic_cast<LivingGameObject*>(obj);
-	if (castedToLivingObject != NULL && !castedToLivingObject->isThick()) cancelMoving();
-
-	auto castedToDecorObject = dynamic_cast<DecorGameObject*>(obj);
-	if (castedToDecorObject != NULL && !castedToDecorObject->isThickingObject()) cancelMoving();
+	if (!obj->isThick()) {
+		if (isCollisingWith(*obj) || obj->isCollisingWith(*this)) cancelMovingX();
+		if (isCollisingWith(*obj) || obj->isCollisingWith(*this)) cancelMovingY();
+	}
 }
 
 void LivingGameObject::setDamagingAnimation() {
@@ -123,7 +134,7 @@ void LivingGameObject::setDamagingAnimation() {
 }
 
 int LivingGameObject::executeDamage(LivingGameObject* obj) {
-	if (obj->isClosed()) return 0;
+	if (obj->isClosed() || !obj->isLive()) return 0;
 
 	return 0;
 }

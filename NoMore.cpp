@@ -36,7 +36,7 @@ int main()
 }
 
 void gameHandlerLoop() {
-    while (handler->getStatus() == GameHandler::PLAYING) {
+    while (handler->getStatus() != GameHandler::STOPPED) {
         sizes = getConsoleSize();
         handler->process(sizes.first, sizes.second, keyControl());
 

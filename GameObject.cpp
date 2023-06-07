@@ -77,10 +77,14 @@ void GameObject::preprocess()
 
 }
 
-void GameObject::cancelMoving() {
+void GameObject::cancelMovingX() {
 	x -= diffX;
-	y -= diffY;
 
 	diffX = 0;
+}
+
+void GameObject::cancelMovingY() {
+	y -= diffY;
+
 	diffY = 0;
 }

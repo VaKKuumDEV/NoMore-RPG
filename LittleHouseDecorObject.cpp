@@ -1,6 +1,6 @@
 #include "LittleHouseDecorObject.h"
 
-LittleHouseDecorObject::LittleHouseDecorObject(int x, int y, int borderX, int borderY) :DecorGameObject(x, y, borderX, borderY, false) {
+LittleHouseDecorObject::LittleHouseDecorObject(int x, int y, int borderX, int borderY) :DecorGameObject(x, y, borderX, borderY) {
 
 }
 

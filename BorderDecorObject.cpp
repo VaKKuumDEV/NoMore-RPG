@@ -1,6 +1,6 @@
 #include "BorderDecorObject.h"
 
-BorderDecorObject::BorderDecorObject(int borderX, int borderY) : DecorGameObject(0, 0, borderX, borderY, false) {
+BorderDecorObject::BorderDecorObject(int borderX, int borderY) : DecorGameObject(0, 0, borderX, borderY) {
 
 }
 

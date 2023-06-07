@@ -16,8 +16,11 @@ protected:
 public:
 	using Matrix = std::vector<std::vector<char>>;
 	GameObject(int x, int y, int borderX, int borderY);
+	virtual bool isThick() { return true; }
 	virtual int getX() { return x; }
 	virtual int getY() { return y; }
+	int getCenterX() { return x + getWidth() / 2; }
+	int getCenterY() { return x + getHeight() / 2; }
 	int getDiffX() { return diffX; }
 	int getDiffY() { return diffY; }
 	void setDiffX(int dX) { diffX = dX; }
@@ -33,7 +36,8 @@ public:
 	void setClosed() { closed = true; }
 	virtual bool isCollisingWith(Matrix matr, int x, int y, int width, int height);
 	virtual bool isCollisingWith(GameObject& obj);
-	void cancelMoving();
+	void cancelMovingX();
+	void cancelMovingY();
 	virtual void executeCollision(GameObject* obj);
 	virtual Matrix getMatrix() = 0;
 	virtual void preprocess();

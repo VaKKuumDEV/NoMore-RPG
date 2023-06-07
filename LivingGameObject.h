@@ -33,12 +33,14 @@ private:
 	EnemyActions action = STAING_FIRST;
 protected:
 	int damageCooldown = 0;
+	GameObject::Point motionPoint = GameObject::Point{ -1, -1 };
+	LivingGameObject* lastDamager = NULL;
 public:
 	LivingGameObject(int x, int y, int borderX, int borderY, int health, int maxHealth, double radius, EnemyTypes type);
 	bool isLive() { return health > 0; }
 	Orientation getOrientation() { return currentOrientation; }
 	void heal(int healPoints);
-	virtual int applyDamage(int damagePoints);
+	virtual int applyDamage(int damagePoints, LivingGameObject* damager);
 	virtual int processDamage(int damaged);
 	void processDeath();
 	void addX(int diffX);
@@ -50,12 +52,14 @@ public:
 	EnemyTypes getType() { return type; }
 	EnemyActions getAction() { return action; }
 	int getDamageCooldown() { return damageCooldown; }
+	double getDistance(int x, int y);
 	bool isInVisionPole(int x, int y, int width, int height);
 	void setWalkingAnimation();
 	void setDamagingAnimation();
-	virtual bool isThick() { return true; }
 	virtual int executeDamage(LivingGameObject* obj);
 	void process() override;
 	void executeCollision(GameObject* obj) override;
+	virtual void calculateMotion() { motionPoint = GameObject::Point{ -1,-1 }; }
+	virtual int getScore() { return 0; }
 };
 

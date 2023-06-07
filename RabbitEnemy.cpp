@@ -65,29 +65,74 @@ GameObject::Matrix RabbitEnemy::getMatrix()
 	return matr;
 }
 
+void RabbitEnemy::calculateMotion() {
+	if (lastDamager != NULL) {
+		if (!lastDamager->isClosed() && lastDamager->isLive()) {
+			int diffX = lastDamager->getCenterX() - getCenterX();
+			int diffY = lastDamager->getCenterY() - getCenterY();
+			double distance = sqrt(diffX * diffX + diffY * diffY);
+			double koef = sqrt(4.0 * distance * distance - diffX * diffX) / (double)abs(diffX);
+			diffX *= koef;
+			diffY *= koef;
+
+			motionPoint = GameObject::Point{ getCenterX() + diffX, getCenterY() + diffY };
+		}
+		lastDamager = NULL;
+	}
+	else {
+		int randX = -6 + rand() % 13;
+		int randY = -6 + rand() % 13;
+		motionPoint = GameObject::Point{ getCenterX() + randX, getCenterY() + randY };
+	}
+
+	if (motionPoint.x <= 0) motionPoint.x = 1;
+	if (motionPoint.x >= getBorderX()) motionPoint.x = getBorderX() - 1;
+	if (motionPoint.y <= 0) motionPoint.y = 1;
+	if (motionPoint.y >= getBorderY()) motionPoint.y = getBorderY() - 1;
+}
+
+int RabbitEnemy::applyDamage(int damagePoints, LivingGameObject* damager) {
+	int damage = LivingGameObject::applyDamage(damagePoints, damager);
+	if (damage > 0) lastDamager = damager;
+
+	return damage;
+}
+
 void RabbitEnemy::process()
 {
 	LivingGameObject::process();
-
-	if (getDiffX() != 0 || getDiffY() != 0) setWalkingAnimation();
-	if (getDiffX() >= 0) setOrientation(false);
-	else setOrientation(true);
 }
 
 void RabbitEnemy::preprocess() {
 	LivingGameObject::preprocess();
 
 	if (walkingTicks > 0) walkingTicks--;
-	else {
-		int randX = -3 + rand() % 7;
-		int randY = -3 + rand() % 7;
+	if (walkingCalculatingTicks > 0) walkingCalculatingTicks--;
 
-		setDiffX(randX);
-		setDiffY(randY);
-
-		addX(getDiffX());
-		addY(getDiffY());
-
-		walkingTicks = 20;
+	if ((motionPoint.x < 0 && motionPoint.y < 0) || walkingCalculatingTicks <= 0 || lastDamager != NULL) {
+		calculateMotion();
+		walkingCalculatingTicks = 60;
 	}
+
+	if (walkingTicks <= 0 && motionPoint.x >= 0 && motionPoint.y >= 0) {
+		double distance = getDistance(motionPoint.x, motionPoint.y);
+		if (distance > 1.0) {
+			int diffX = getX() - motionPoint.x;
+			int diffY = getY() - motionPoint.y;
+
+			int randX = diffX == 0 ? 0 : (1 + rand() % 2);
+			int randY = diffY == 0 ? 0 : 1;
+
+			setDiffX((diffX == 0 ? 0 : (abs(diffX) / diffX)) * std::min(abs(diffX), randX));
+			setDiffY((diffY == 0 ? 0 : (abs(diffY) / diffY)) * std::min(abs(diffY), randY));
+
+			addX(getDiffX());
+			addY(getDiffY());
+		}
+
+		walkingTicks = 5;
+	}
+}
+void RabbitEnemy::executeCollision(GameObject* obj) {
+	LivingGameObject::executeCollision(obj);
 }

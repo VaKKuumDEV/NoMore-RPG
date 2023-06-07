@@ -9,19 +9,28 @@ void GameHandler::start() {
 	PlayerObject* player = new PlayerObject(3, 2, gameBorderRight, gameBorderTop);
 	enemies.push_back(player);
 
-	for (int i = 0; i < 1; i++) {
-		int rabX = 10 + rand() % (gameBorderRight - 20);
-		int rabY = 10 + rand() % (gameBorderTop - 20);
-		RabbitEnemy* rab = new RabbitEnemy(rabX, rabY, gameBorderRight, gameBorderTop);
+	LittleHouseDecorObject* house1 = new LittleHouseDecorObject(10, 15, gameBorderRight, gameBorderTop);
+	enemies.push_back(house1);
+
+	LittleHouseDecorObject* house2 = new LittleHouseDecorObject(35, 60, gameBorderRight, gameBorderTop);
+	enemies.push_back(house2);
+
+	LittleHouseDecorObject* house3 = new LittleHouseDecorObject(70, 10, gameBorderRight, gameBorderTop);
+	enemies.push_back(house3);
+
+	for (int i = 0; i < 5; i++) {
+		RabbitEnemy* rab;
+		do {
+			int rabX = 10 + rand() % (gameBorderRight - 20);
+			int rabY = 10 + rand() % (gameBorderTop - 20);
+			rab = new RabbitEnemy(rabX, rabY, gameBorderRight, gameBorderTop);
+		} while (!canSpawn(rab));
 
 		bool isLeft = 1 + rand() % 2 == 1 ? true : false;
 		rab->setOrientation(isLeft);
 
 		enemies.push_back(rab);
 	}
-
-	LittleHouseDecorObject* house = new LittleHouseDecorObject(10, 15, gameBorderRight, gameBorderTop);
-	enemies.push_back(house);
 
 	/*BorderDecorObject* border = new BorderDecorObject(gameBorderRight, gameBorderTop);
 	enemies.push_back(border);*/
@@ -33,6 +42,10 @@ void GameHandler::start() {
 	LabelObject* healthTip = new LabelObject("", false, 0, 0, 0, gameBorderRight, gameBorderTop);
 	healthTip->setFormat("Health: %health%/%maxHealth%");
 	tipMessages.push_back(healthTip);
+
+	LabelObject* scoreTip = new LabelObject("", false, 0, 0, 0, gameBorderRight, gameBorderTop);
+	scoreTip->setFormat("Score: %score%");
+	tipMessages.push_back(scoreTip);
 
 	status = PLAYING;
 }
@@ -79,6 +92,13 @@ GameObject::Matrix GameHandler::getGameMatrix(int screenWidth, int screenHeight)
 
 				gameMatrix[locY] = lineChars;
 			}
+		}
+	}
+	else if (status == FINISHED) {
+		std::string text = "Your score: " + std::to_string(score);
+		int startIndex = screenWidth / 2 - text.size() / 2;
+		for (int i = 0; i < text.size(); i++) {
+			gameMatrix[screenHeight / 2][startIndex + i] = text[i];
 		}
 	}
 
@@ -206,15 +226,28 @@ void GameHandler::process(int screenWidth, int screenHeight, std::vector<PRESSED
 			if (isKeyPressed(SPACE, pressedKeys)) {
 				pl->setDamagingAnimation();
 				std::vector<LabelObject*> damageParticles;
+				std::vector<LivingGameObject*> livingEnemies;
+
 				for (auto enemy : enemies) {
 					if (enemy == NULL || enemy == pl) continue;
 					auto castedToLivingObject = dynamic_cast<LivingGameObject*>(enemy);
-					if (castedToLivingObject != NULL && pl->isInVisionPole(castedToLivingObject->getX(), castedToLivingObject->getY(), castedToLivingObject->getWidth(), castedToLivingObject->getHeight()) && castedToLivingObject->getDamageCooldown() <= 0) {
-						int damage = pl->executeDamage(castedToLivingObject);
+					if (castedToLivingObject != NULL && !castedToLivingObject->isClosed()) livingEnemies.push_back(castedToLivingObject);
+				}
+				sort(livingEnemies.begin(), livingEnemies.end(), [pl](LivingGameObject* a, LivingGameObject* b) {
+					double distanceA = pl->getDistance(a->getCenterX(), a->getCenterY());
+					double distanceB = pl->getDistance(b->getCenterX(), b->getCenterY());
+					return distanceA < distanceB;
+				});
+
+				for (auto living : livingEnemies) {
+					if (pl->isInVisionPole(living->getX(), living->getY(), living->getWidth(), living->getHeight()) && living->getDamageCooldown() <= 0) {
+						int damage = pl->executeDamage(living);
 
 						if (damage > 0) {
-							int labelX = castedToLivingObject->getX() + rand() % (castedToLivingObject->getWidth() + 3);
-							int labelY = castedToLivingObject->getY() + rand() % (castedToLivingObject->getHeight() + 3);
+							if (!living->isLive()) score += living->getScore();
+
+							int labelX = living->getX() + rand() % (living->getWidth() + 3);
+							int labelY = living->getY() + rand() % (living->getHeight() + 3);
 
 							LabelObject* damageLabel = new LabelObject("-" + std::to_string(damage), true, TPS, labelX, labelY, getRightBorder(), getTopBorder());
 							damageParticles.push_back(damageLabel);
@@ -239,8 +272,7 @@ void GameHandler::process(int screenWidth, int screenHeight, std::vector<PRESSED
 			enemy->preprocess();
 			for (auto enemy2 : enemies) {
 				if (enemy == NULL || enemy == enemy2) continue;
-				if (enemy->isCollisingWith(*enemy2)) 
-					enemy->executeCollision(enemy2);
+				if (enemy->isCollisingWith(*enemy2) || enemy2->isCollisingWith(*enemy)) enemy->executeCollision(enemy2);
 			}
 
 			enemy->process();
@@ -258,6 +290,15 @@ void GameHandler::process(int screenWidth, int screenHeight, std::vector<PRESSED
 		for (int i = 0; i < newEnemies.size(); i++) enemies.push_back(newEnemies[i]);
 
 		processTipMessages(screenWidth, screenHeight);
+		if (isCompleted()) status = FINISHED;
+	}
+	else if (status == FINISHED) {
+		bool hasSpace = false;
+		for (auto key : pressedKeys) {
+			if (key == SPACE) hasSpace = true;
+		}
+
+		if (!hasSpace) status = STOPPED;
 	}
 
 	printMatrix(screenWidth, screenHeight);
@@ -287,6 +328,7 @@ void GameHandler::processTipMessages(int screenWidth, int screenHeight) {
 		tipMessage->setY(screenHeight - 2 + screenPlayerOffsetY - i);
 
 		std::string format = tipMessage->getFormat();
+		format = replace(format, "%score%", std::to_string(score));
 		if (player != NULL) {
 			format = replace(format, "%x%", std::to_string(player->getX()));
 			format = replace(format, "%y%", std::to_string(player->getY()));
@@ -308,4 +350,26 @@ std::string GameHandler::replace(const std::string& inputString, const std::stri
 	}
 
 	return result;
+}
+
+bool GameHandler::canSpawn(GameObject* obj) {
+	for (auto enemy : enemies) {
+		if (enemy->isThick() && (enemy->isCollisingWith(*obj) || obj->isCollisingWith(*enemy))) return false;
+	}
+
+	return true;
+}
+
+bool GameHandler::isCompleted() {
+	auto pl = getPlayer();
+	if (pl == NULL) return true;
+
+	std::vector<LivingGameObject*> livingEnemies;
+	for (auto enemy : enemies) {
+		if (enemy == NULL || enemy == pl) continue;
+		auto castedToLivingObject = dynamic_cast<LivingGameObject*>(enemy);
+		if (castedToLivingObject != NULL && !castedToLivingObject->isClosed()) livingEnemies.push_back(castedToLivingObject);
+	}
+
+	return livingEnemies.size() <= 0;
 }

@@ -91,7 +91,7 @@ GameObject::Matrix PlayerObject::getMatrix() {
 int PlayerObject::executeDamage(LivingGameObject* obj) {
 	LivingGameObject::executeDamage(obj);
 
-	int damage = obj->applyDamage(MIN_DAMAGE + rand() % (MAX_DAMAGE - MIN_DAMAGE + 1));
+	int damage = obj->applyDamage(MIN_DAMAGE + rand() % (MAX_DAMAGE - MIN_DAMAGE + 1), this);
 	return damage;
 }
 
@@ -100,11 +100,6 @@ void PlayerObject::executeCollision(GameObject* obj) {
 }
 
 void PlayerObject::process() {
-	if (getDiffX() != 0 || getDiffY() != 0) setWalkingAnimation();
-
-	if (getDiffX() < 0) setOrientation(true);
-	else if (getDiffX() > 0) setOrientation(false);
-
 	LivingGameObject::process();
 }
 

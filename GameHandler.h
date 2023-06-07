@@ -5,6 +5,7 @@
 #include "BorderDecorObject.h"
 #include "LabelObject.h"
 #include "LittleHouseDecorObject.h"
+#include <algorithm>
 #include <tuple>
 #include <iostream>
 #include <Windows.h>
@@ -28,6 +29,7 @@ public:
 	enum GameStatuses {
 		NOT_INITED,
 		PLAYING,
+		FINISHED,
 		STOPPED,
 	};
 	struct MatrixDiff {
@@ -41,6 +43,7 @@ private:
 	int gameBorderTop, gameBorderRight;
 	std::vector<GameObject*> enemies;
 	std::vector<LabelObject*> tipMessages;
+	int score = 0;
 	GameObject::Matrix getGameMatrix(int screenWidth, int screenHeight);
 	std::list<GameHandler::MatrixDiff> getMatrixesDiff(GameObject::Matrix lastMatrix, GameObject::Matrix nextMatrix);
 	void ClearScreen();
@@ -59,4 +62,6 @@ public:
 	void process(int screenWidth, int screenHeight, std::vector<PRESSED_KEYS> pressedKeys);
 	void processTipMessages(int screenWidth, int screenHeight);
 	std::string replace(const std::string& inputString, const std::string& src, const std::string& dst);
+	bool canSpawn(GameObject* obj);
+	bool isCompleted();
 };

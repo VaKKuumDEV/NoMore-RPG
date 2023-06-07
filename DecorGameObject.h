@@ -4,11 +4,8 @@
 #pragma once
 class DecorGameObject : public GameObject
 {
-private:
-	bool isThick;
 public:
-	DecorGameObject(int x, int y, int borderX, int borderY, bool isThick);
+	DecorGameObject(int x, int y, int borderX, int borderY);
 	bool isCollisingWith(GameObject& obj) override;
-	bool isThickingObject() { return isThick; }
 };
 
